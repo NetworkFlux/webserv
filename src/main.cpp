@@ -1,11 +1,17 @@
 #include "../include/Socket/ServerSocket.hpp"
 #include "../include/Socket/ClientSocket.hpp"
+#include "../include/Config/Config.hpp"
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	ServerSocket	server(AF_INET, SOCK_STREAM, 0, 19000, INADDR_ANY);
+	if (argc != 2)
+	{
+		std::cout << "Bad file." << std::endl;
+		return (1);
+	}
 
-	server.listening(10);
-	server.grabConnection();
+	Config	config(argv[1]);
+
 	return (0);
 }
+ 
