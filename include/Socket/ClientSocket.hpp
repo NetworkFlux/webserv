@@ -12,10 +12,19 @@ class ClientSocket : public SimpleSocket
 		sockaddr_in	_address;
 		char		_serverResponse[BUFFER_SIZE];
 
+	// Unused Constructors
+	private:
+		ClientSocket();
+		ClientSocket(const ClientSocket& src);
+
 	// Constructors
 	public:
 		ClientSocket(int domain, int type, int protocol, int port);
 		~ClientSocket();
+
+	// Unused Operator Overloads
+	private:
+		ClientSocket&	operator=(const ClientSocket& other);
 
 	// Member Functions
 	public:

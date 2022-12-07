@@ -14,14 +14,22 @@ class ServerSocket : public SimpleSocket
 		int			_connection; // File Descriptor to the established connection
 		char		_buffer[BUFFER_SIZE];
 
+	// Unused Constructors
+	private:
+		ServerSocket();
+		ServerSocket(const ServerSocket& src);
+
 	// Constructors
 	public:
 		ServerSocket(int domain, int type, int protocol, int port, u_int32_t interface);
 		~ServerSocket();
 
+	// Unused Operator Overload
+		ServerSocket&	operator=(const ServerSocket& other);
+
 	// Member Functions
 	public:
-		void	listening(int maxIncoming);
+		void	listeningMode(int maxIncoming);
 		void	grabConnection(void);
 		void	readConnection(void);
 		void	giveResponse(std::string message);
