@@ -1,33 +1,30 @@
 #pragma once
 
-#include <iostream>
 #include <fstream>
-#include <unistd.h>
-#include <string>
 
+#include "SimpleConfig.hpp"
+
+/*	USAGE: To use the ServerConfig class you must pass the path to the configuration
+	file as agrument of its constructor. Its constructor will create, parse and configure
+	everything that is needed to work later. --ServerConfig	name(path_to_conf)-- */
 class ServerConfig
 {
 	// Member Variables
 	private:
-		std::ifstream	_confFile;
-
-	public:
-		std::string	confPath;
-		std::string	port;
-		std::string	host;
-		std::string	errorPage;
-		//Location	location;
-
-
-	// Unused Constructors
-	private:
-		Config();
-		Config(const Config& src);
+		std::vector<SimpleConfig>	_servConf;
+		std::ifstream				_file;
 
 	// Constructors
 	public:
-		Config(std::string	path);
-		~Config();
+		ServerConfig(std::string path);
+		~ServerConfig();
 
-	// Member Functions
+	// Member Function
+	public:
+		void	printConf(void) const;
+
+	// Helper Functions
+	private:
+		std::vector<std::string>	splitLine(const std::string& line, const std::string& sep) const;
+
 };

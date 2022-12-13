@@ -1,6 +1,6 @@
 #include "../include/Socket/ServerSocket.hpp"
 #include "../include/Socket/ClientSocket.hpp"
-#include "../include/Config/Config.hpp"
+#include "../include/Config/ServerConfig.hpp"
 
 int	main(int argc, char **argv)
 {
@@ -10,8 +10,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 
-	Config	config(argv[1]);
-
+	ServerConfig	config(argv[1]); // Easy way to launch the parsing
+	config.printConf();
 	return (0);
 }
- 
