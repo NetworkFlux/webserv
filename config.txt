@@ -1,65 +1,35 @@
 server {
-	   listen :9000;
-	   server_name localhost;
-		index	doesnotexist index.html;
-	   location / {
-			allowed_method GET POST DELETE;
-			root ./www;
-	   }
-#	   error_page 404 ./404.html;
-	   error_page 403 ./403.html;
-}
-
-server {
-	   listen :8000;
-	   server_name localhost;
-	   index	doesnotexist index.html;
-
-	   location / {
-		  root ./www;
-	   }
-}
-
-server {
-	   listen :7000;
-	   server_name localhost;
-	   index	doesnotexist index.html;
-
-	   location / {
-		  root ./www;
-	   }
-	   error_page 404 ./404.html;
-	   error_page 403 ./403.html;
-}
-
-server {
-	   listen :7042;
-	   server_name localhost;
-	   index	doesnotexist index.html;
-
-	   location / {
-		  root ./srcs/testPages;
-	   }
-}
-
-server {
-	   listen :10000;
-	   server_name localhost;
-#	   index	doesnotexist;
-	   autoindex on;
-	   location / {
-		  root ./www;
-	   }
-	   error_page 404 ./404.html;
-	   error_page 403 ./403.html;
-}
-
-server {
-	   listen :9000;
-	   server_name gougou.net;
-	   index	funny.html;
-	   location / {
-		  root ./www;
-	   }
-
+    listen 8081 localhost;
+    location / {
+        method GET;
+        autoindex on;
+        root /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
+        cgi_extension bla;
+        cgi_path  /home/rchallie/Development/42_School/webserv/corr_server/ubuntu_cgi_tester;
+    }
+    location /directory {
+        method GET POST;
+        client_max_body_size 1G;
+        index youpi.bad_extension;
+        cgi_path  /home/rchallie/Development/42_School/webserv/corr_server/ubuntu_cgi_tester;
+        cgi_extension bla;
+        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
+    }
+    location /put_test/ {
+        method PUT;
+        client_max_body_size 1G;
+        index youpi.bad_extension;
+        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane/;
+		upload_path  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane/put_test/;
+    }
+    location /post_body {
+		method GET POST;
+        client_max_body_size 100;
+        index youpi.bad_extension;
+        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
+    }
+    location /upload {
+        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
+        method PUT DELETE;
+    }
 }
