@@ -26,5 +26,6 @@ class ServerConfig
 	// Helper Functions
 	private:
 		std::vector<std::string>	splitLine(const std::string& line, const std::string& sep) const;
+		long		convertToByte(const std::string& value);
 
 };
