@@ -1,7 +1,7 @@
 #include "../../include/Config/ServerConfig.hpp"
 
 /*	This constructor will parsed the configuration file and store all its informations
-	in the ServerConfig class makings its data usable for use.	*/
+	in the ServerConfig class making its data usable for use.	*/
 ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 {
 	std::string	line;
@@ -126,6 +126,7 @@ std::vector<std::string>	ServerConfig::splitLine(const std::string& line, const 
 	return (res);
 }
 
+/*	This functions converts a string like "15G" to the number of bytes in 15 GigaBytes.	*/
 long		ServerConfig::convertToByte(const std::string& value)
 {
 	long	res = 0;
@@ -149,9 +150,9 @@ long		ServerConfig::convertToByte(const std::string& value)
 		return (res);
 }
 
-/*	This function will output all the data stored in the ServerConf class, usefull for
+/*	This function will output all the data stored in a ServerConfig object, usefull for
 	troubleshooting. It outputs the data for each server.	*/
-void	ServerConfig::printConf(void) const
+void	ServerConfig::printInfo(void)
 {
 	// Print Title
 	std::cout << YELLOW_B <<"-- SERVER CONFIGURATION --" << RESET << std::endl << std::endl;
@@ -159,176 +160,11 @@ void	ServerConfig::printConf(void) const
 	{
 		std::cout << GREEN_B << "\t| Server " << (i + 1) << " |" << std::endl;
 		std::cout << "\t------------" << std::endl;
-		// Listen
-		if (_servConf[i]._listen.size())
-		{
-			std::cout << RED_B << "listen \t\t: " << RED ;
-			for (size_t j = 0; j < _servConf[i]._listen.size(); j++)
-				std::cout << _servConf[i]._listen[j] << " - ";
-			std::cout << RESET << std::endl;
-		}
-		// Server names
-		if (_servConf[i]._serverNames.size())
-		{
-			std::cout << RED_B << "server_name \t: " << RED;
-			for (size_t j = 0; j < _servConf[i]._serverNames.size(); j++)
-				std::cout << _servConf[i]._serverNames[j] << " - ";
-			std::cout << RESET << std::endl;
-		}
-		// Error pages
-		if (_servConf[i]._errorPages.size())
-		{
-			std::cout << RED_B << "error_pages \t: " << RED;
-			for (std::map<int, std::string>::const_iterator it = _servConf[i]._errorPages.begin(); it != _servConf[i]._errorPages.end(); ++it)
-				std::cout << "(" << it->first << " -> " << it->second << ") - ";
-			std::cout << RESET << std::endl;
-		}
-		// Autoindex
-		if (_servConf[i]._autoIndex)
-		{
-			std::cout << RED_B << "autoindex \t: " << RED;
-			std::cout << _servConf[i]._autoIndex << RESET << std::endl;
-		}
-		// Index
-		if (_servConf[i]._index.size())
-		{
-			std::cout << RED_B << "index \t\t: " << RED;
-			for (size_t j = 0; j < _servConf[i]._index.size(); j++)
-				std::cout << _servConf[i]._index[j] << " - ";
-			std::cout << RESET << std::endl;
-		}
-		// Root
-		if (!_servConf[i]._root.empty())
-		{
-			std::cout << RED_B << "root \t\t: " << RED;
-			std::cout << _servConf[i]._root << RESET << std::endl;
-		}
-		// Max body size
-		if (_servConf[i]._maxBody)
-		{
-			std::cout << RED_B << "client_max_size\t: " << RED;
-			std::cout << _servConf[i]._maxBody << RESET << std::endl;
-		}
-		// Methods
-		if (_servConf[i]._methods.size())
-		{
-			std::cout << RED_B << "methods \t: " << RED;
-			for (size_t j = 0; j < _servConf[i]._methods.size(); j++)
-				std::cout << _servConf[i]._methods[j] << " - ";
-			std::cout << RESET << std::endl;
-		}
-		// Upload
-		if (_servConf[i]._upload)
-		{
-			std::cout << RED_B << "upload \t\t: " << RED;
-			std::cout << _servConf[i]._upload << RESET << std::endl;
-		}
-		// Root
-		if (!_servConf[i]._uploadPath.empty())
-		{
-			std::cout << RED_B << "upload path \t: " << RED;
-			std::cout << _servConf[i]._uploadPath << RESET << std::endl;
-		}
-		// CGI extentions
-		if (_servConf[i]._cgiExt.size())
-		{
-			std::cout << RED_B << "CGI extentions \t: " << RED;
-			for (size_t j = 0; j < _servConf[i]._cgiExt.size(); j++)
-				std::cout << _servConf[i]._cgiExt[j] << " - ";
-			std::cout << RESET << std::endl;
-		}
-		// CGI path
-		if (!_servConf[i]._cgiPath.empty())
-		{
-			std::cout << RED_B << "CGI path \t: " << RED;
-			std::cout << _servConf[i]._cgiPath << RESET << std::endl;
-		}
+		_servConf[i].printConf("", RED);
 		for (std::map<std::string, SimpleConfig>::const_iterator it = _servConf[i]._locations.begin(); it != _servConf[i]._locations.end(); ++it)
 		{
 			std::cout << PURPLE_B << "locations : " << PURPLE << it->first << std::endl;
-			if (it->second._listen.size())
-			{
-				std::cout << PURPLE_B << "\tlisten \t\t: " << PURPLE ;
-				for (size_t j = 0; j < it->second._listen.size(); j++)
-					std::cout << it->second._listen[j] << " - ";
-				std::cout << RESET << std::endl;
-			}
-			// Server names
-			if (it->second._serverNames.size())
-			{
-				std::cout << PURPLE_B << "\tserver_name \t: " << PURPLE;
-				for (size_t j = 0; j < it->second._serverNames.size(); j++)
-					std::cout << it->second._serverNames[j] << " - ";
-				std::cout << RESET << std::endl;
-			}
-			// Error pages
-			if (it->second._errorPages.size())
-			{
-				std::cout << PURPLE_B << "\terror_pages \t: " << PURPLE;
-				for (std::map<int, std::string>::const_iterator itb =  it->second._errorPages.begin(); itb != it->second._errorPages.end(); ++it)
-					std::cout << "(" << itb->first << " -> " << itb->second << ") - ";
-				std::cout << RESET << std::endl;
-			}
-			// Autoindex
-			if (it->second._autoIndex)
-			{
-				std::cout << PURPLE_B << "\tautoindex \t: " << PURPLE;
-				std::cout << it->second._autoIndex << RESET << std::endl;
-			}
-			// Index
-			if (it->second._index.size())
-			{
-				std::cout << PURPLE_B << "\tindex \t\t: " << PURPLE;
-				for (size_t j = 0; j < it->second._index.size(); j++)
-					std::cout << it->second._index[j] << " - ";
-				std::cout << RESET << std::endl;
-			}
-			// Root
-			if (!it->second._root.empty())
-			{
-				std::cout << PURPLE_B << "\troot \t\t: " << PURPLE;
-				std::cout << it->second._root << RESET << std::endl;
-			}
-			// Max body size
-			if (it->second._maxBody)
-			{
-				std::cout << PURPLE_B << "\tclient_max_size\t: " << PURPLE;
-				std::cout << it->second._maxBody << RESET << std::endl;
-			}
-			// Methods
-			if (it->second._methods.size())
-			{
-				std::cout << PURPLE_B << "\tmethods \t: " << PURPLE;
-				for (size_t j = 0; j < it->second._methods.size(); j++)
-					std::cout << it->second._methods[j] << " - ";
-				std::cout << RESET << std::endl;
-			}
-			// Upload
-			if (it->second._upload)
-			{
-				std::cout << PURPLE_B << "\tupload \t\t: " << PURPLE;
-				std::cout << it->second._upload << RESET << std::endl;
-			}
-			// Root
-			if (!it->second._uploadPath.empty())
-			{
-				std::cout << PURPLE_B << "\tupload path \t: " << PURPLE;
-				std::cout << it->second._uploadPath << RESET << std::endl;
-			}
-			// CGI extentions
-			if (it->second._cgiExt.size())
-			{
-				std::cout << PURPLE_B << "\tCGI extentions \t: " << PURPLE;
-				for (size_t j = 0; j < it->second._cgiExt.size(); j++)
-					std::cout << it->second._cgiExt[j] << " - ";
-				std::cout << RESET << std::endl;
-			}
-			// CGI path
-			if (!it->second._cgiPath.empty())
-			{
-				std::cout << PURPLE_B << "\tCGI path \t: " << PURPLE;
-				std::cout << it->second._cgiPath << RESET << std::endl;
-			}
+			it->second.printConf("\t", PURPLE);
 		}
 		std::cout << std::endl;
 	}

@@ -1,35 +1,47 @@
+# Here is an example of a full configuration using all the features available.
+# It's based on Nginx conf, without the features we don't need to manage.
+
+# Binary properties takes yes/no as value.
+# Properties assignment ends with ';'.
+# There can be an inifinite number of whitespaces before and between proprties name and values.
+
+# A simple server on port 80.
 server {
-    listen 8081 localhost;
-    location / {
-        method GET;
-        autoindex on;
-        root /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
-        cgi_extension bla;
-        cgi_path  /home/rchallie/Development/42_School/webserv/corr_server/ubuntu_cgi_tester;
-    }
-    location /directory {
-        method GET POST;
-        client_max_body_size 1G;
-        index youpi.bad_extension;
-        cgi_path  /home/rchallie/Development/42_School/webserv/corr_server/ubuntu_cgi_tester;
-        cgi_extension bla;
-        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
-    }
-    location /put_test/ {
-        method PUT;
-        client_max_body_size 1G;
-        index youpi.bad_extension;
-        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane/;
-		upload_path  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane/put_test/;
-    }
-    location /post_body {
-		method GET POST;
-        client_max_body_size 100;
-        index youpi.bad_extension;
-        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
-    }
-    location /upload {
-        root  /home/rchallie/Development/42_School/webserv/corr_server/YoupiBanane;
-        method PUT DELETE;
-    }
+	listen 80 localhost;
+	server_name localhost;
+
+	error_page 404 ./404.html;
+	error_page 403 ./403.html;
+	error_page 500 ./500.html;
+
+	client_max_body_size 500K;
+
+	# When / is asked, we serve a simple HTML file.
+	location / {
+		root /www;
+		method GET;
+		index ./homepage.html;
+	}
+
+	# /upload location is a location that able file upload on the server.
+	location /upload {
+		method POST;
+		upload_enable on;
+		upload_path /tmp/uploads/;
+	}
+}
+
+# A server on port 5000 serving php files.
+server {
+	listen 5000 localhost;
+	server_name localhost 127.0.0.1;
+
+	location / {
+		root /home/42/website;
+		autoindex off;
+
+		# CGI on files ending with .php.
+		cgi_extension php;
+		cgi_path localhost:9000;
+	}
 }

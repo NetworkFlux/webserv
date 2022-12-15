@@ -61,7 +61,7 @@ void	ServerSocket::readConnection(void)
 		perror("Failed to read,\n");
 		exit(EXIT_FAILURE);
 	}
-	giveResponse("HTTP/1.0 200 OK\r\n\r\nHello"); // Should not be done here (but ok for the moment)
+	giveResponse("HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!"); // Should not be done here (but ok for the moment)
 }
 
 /*	This function will send a message to the connection.	*/

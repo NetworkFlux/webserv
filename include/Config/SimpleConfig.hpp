@@ -25,4 +25,8 @@ class SimpleConfig
 		SimpleConfig();
 		~SimpleConfig();
 
+	// Member Functions
+	public:
+		void	printConf(std::string prefix, std::string color) const;
+
 };

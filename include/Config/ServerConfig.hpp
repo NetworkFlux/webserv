@@ -10,7 +10,7 @@
 class ServerConfig
 {
 	// Member Variables
-	private:
+	public:
 		std::vector<SimpleConfig>	_servConf;
 		std::ifstream				_file;
 
@@ -21,7 +21,7 @@ class ServerConfig
 
 	// Member Function
 	public:
-		void	printConf(void) const;
+		void	printInfo(void);
 
 	// Helper Functions
 	private:
