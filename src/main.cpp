@@ -1,6 +1,7 @@
 #include "../include/Socket/ServerSocket.hpp"
 #include "../include/Socket/ClientSocket.hpp"
 #include "../include/Config/ServerConfig.hpp"
+#include "../include/WebServer.hpp"
 
 int	main(int argc, char **argv)
 {
@@ -11,8 +12,9 @@ int	main(int argc, char **argv)
 	}
 
 	ServerConfig	config(argv[1]); // Easy way to launch the parsing
-	ServerSocket	server(AF_INET, SOCK_STREAM, 0, stoi(config._servConf[0]._listen[0]), INADDR_ANY);
-	server.listeningMode(5);
-	server.grabConnection();
+	WebServer		web_server; // Create  WebServer with all the servers configs
+
+	web_server.listen(&config);
+	
 	return (0);
 }

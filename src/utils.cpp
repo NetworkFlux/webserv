@@ -10,3 +10,10 @@ bool	charInStr(const char& c, const std::string& str)
 	}
 	return (false);
 }
+
+std::string toString(const int& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}

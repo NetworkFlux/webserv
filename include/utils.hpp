@@ -22,7 +22,12 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sstream>
+#include <cstdlib>
+#include <algorithm>
+#include <cctype>
 
 
 // Utils Functions
 bool	charInStr(const char& c, const std::string& str);
+std::string toString(const int& value);

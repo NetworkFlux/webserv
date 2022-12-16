@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <string>
 
 
 /*	This is the Base Socket Class, it handels the creation and deltion

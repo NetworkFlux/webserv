@@ -33,25 +33,22 @@ void	ServerSocket::listeningMode(int maxIncoming)
 	from the connection if a connection is established.	*/
 void	ServerSocket::grabConnection(void)
 {
-	for ( ; ; )
-	{
 		_addressLen = sizeof(_address);
 		_connection = accept(_sockFD, (struct sockaddr *)&_address, (socklen_t *)&_addressLen);
 		testConnection(_connection, "Failed to grab a connection.\n");
-		readConnection(); // Should not be done here (but ok for the moment)
-	}
 }
 
 /*	If a connection has been made this function will attempt to read from the socket
 	and output the read content.	*/
-void	ServerSocket::readConnection(void)
+std::string	ServerSocket::readConnection(void)
 {
 	int		bytesRead;
 
+	_request.clear();
 	bzero(_buffer, sizeof(_buffer));
 	while ((bytesRead = read(_connection, _buffer, BUFFER_SIZE)) > 1)
 	{
-		std::cout << _buffer;
+		_request.append(_buffer);
 		if (_buffer[bytesRead - 1] == '\n')
 			break;
 		bzero(_buffer, sizeof(_buffer));
@@ -61,7 +58,7 @@ void	ServerSocket::readConnection(void)
 		perror("Failed to read,\n");
 		exit(EXIT_FAILURE);
 	}
-	giveResponse("HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!"); // Should not be done here (but ok for the moment)
+	return (_request);
 }
 
 /*	This function will send a message to the connection.	*/

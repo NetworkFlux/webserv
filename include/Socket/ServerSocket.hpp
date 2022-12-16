@@ -13,6 +13,7 @@ class ServerSocket : public SimpleSocket
 		int			_addressLen;
 		int			_connection; // File Descriptor to the established connection
 		char		_buffer[BUFFER_SIZE];
+		std::string _request;
 
 	// Unused Constructors
 	private:
@@ -29,8 +30,8 @@ class ServerSocket : public SimpleSocket
 
 	// Member Functions
 	public:
-		void	listeningMode(int maxIncoming);
-		void	grabConnection(void);
-		void	readConnection(void);
-		void	giveResponse(std::string message);
+		void		listeningMode(int maxIncoming);
+		void		grabConnection(void);
+		void		giveResponse(std::string message);
+		std::string	readConnection(void);
 };
