@@ -10,9 +10,7 @@ SimpleConfig::SimpleConfig() : _listen(), _serverNames(), _errorPages(), _index(
 
 /*	Deletes the values stored in the member variable after some necessary steps.	*/
 SimpleConfig::~SimpleConfig()
-{
-
-}
+{}
 
 /*	This function will output all the data stored in a SimpleConfig object, usefull for
 	troubleshooting. A prefix can be used for a nicer output managment aswell as

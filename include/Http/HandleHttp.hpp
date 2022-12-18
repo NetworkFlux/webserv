@@ -1,30 +1,37 @@
 #pragma once
 
 #include "HandleResponse.hpp"
-#include "HandleRequest.hpp"
+#include "HandleResponse.hpp"
 #include "../Methods/GetMethod.hpp"
 #include "../Methods/PostMethod.hpp"
 #include "../utils.hpp"
 
+/*	This class contains all the necessary information needed for requests aswell as
+	for responses. It is this object that does all the work and the communication
+	between server and client.	*/
 class HandleHttp
 {
-    private:
-        HandleRequest   * _req;
-        HandleResponse  * _rep;
+	// Member Variables
+	private:
+		HandleRequest*	_req;
+		HandleResponse*	_resp;
+		Method*			_meth;
+		std::string		_final_line;
 
-        Method          *_meth;
+	// Constuctors
+	public:
+		HandleHttp();
+		~HandleHttp();
 
-        std::string     final_line;
-    
-    public:
-        HandleHttp();
-        HandleHttp(HandleHttp const &x);
-        HandleHttp& operator=(HandleHttp const &x);
-        ~HandleHttp();
+	// Setters
+	public:
+		void	set_method(std::string meth);
 
-        std::string do_work(std::string req);
-        void set_method(std::string meth);
+	// Member Functions
+	public:
+		std::string	do_work(std::string req);
 
-    private:
-        std::string get_reason_for_code(int code) const;
+	// Helper Functions
+	private:
+		std::string	get_reason_for_code(int code) const;
 };

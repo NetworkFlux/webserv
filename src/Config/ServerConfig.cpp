@@ -99,9 +99,7 @@ ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 
 /* The destructor does not need to clean anything right now.	*/
 ServerConfig::~ServerConfig()
-{
-
-}
+{}
 
 /*	This function will split a string into its individual words enabeling easy parsing.	*/
 std::vector<std::string>	ServerConfig::splitLine(const std::string& line, const std::string& sep) const

@@ -2,25 +2,28 @@
 
 #include "Message.hpp"
 
+/*	This class will hold all the informations required for a client request to
+	the server.	*/
 class Request : public Message
 {
-    private:
-        std::string _method;
-        std::string _path;
-        std::string _protocol;
+	// Member Variables
+	private:
+		std::string	_method;
+		std::string	_path;
+		std::string	_protocol;
 
-    public:
-        Request();
-        Request(Request const &x);
-        ~Request();
+	// Constructors
+	public:
+		Request();
+		~Request();
 
-        std::string const &get_method(void);
-        std::string const &get_path(void);
-        std::string const &get_protocol(void);
+	// Getters/Setters
+	public:
+		const std::string&	get_method(void);
+		const std::string&	get_path(void);
+		const std::string&	get_protocol(void);
 
-        void set_method(std::string const &method);
-        void set_path(std::string const &uri);
-        void set_protocol(std::string const &version);
-
-
+		void	set_method(const std::string& method);
+		void	set_path(const std::string& uri);
+		void	set_protocol(const std::string& version);
 };

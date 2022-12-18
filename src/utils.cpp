@@ -13,7 +13,7 @@ bool	charInStr(const char& c, const std::string& str)
 
 std::string toString(const int& value)
 {
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
+	std::ostringstream oss;
+	oss << value;
+	return oss.str();
 }

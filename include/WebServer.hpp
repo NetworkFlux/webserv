@@ -6,12 +6,12 @@
 
 class WebServer
 {
-    private:
+	// Constructors
+	public:
+		WebServer();
+		~WebServer();
 
-    public:
-        WebServer(void);
-        ~WebServer(void);
-
-        void listen(ServerConfig *config);
-        std::string handle_client(std::string req);
+	// Member Functions
+		void		listen(ServerConfig *config);
+		std::string	handle_client(std::string req);
 };

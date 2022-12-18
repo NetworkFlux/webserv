@@ -1,65 +1,56 @@
 #include "../../include/Http/HandleMessage.hpp"
 
-HandleMessage::HandleMessage(void)
+HandleMessage::HandleMessage()
 {
-    _message = new Message();
+	_message = new Message();
 }
 
-HandleMessage::HandleMessage(HandleMessage const & x)
+HandleMessage::~HandleMessage()
 {
-    *this = x;
+	delete _message;
 }
 
-HandleMessage &HandleMessage::operator=(HandleMessage const &x)
+/* Returns all the header in the Message member.	*/
+const std::map<std::string, std::string>&	HandleMessage::get_message_header(void) const
 {
-    if (this != &x)
-		_message = x._message;
-	return *this;
+	return (_message->get_headers());
 }
 
-HandleMessage::~HandleMessage(void)
+/*	Returns the entire body located in the Message member.	*/
+const std::string&	HandleMessage::get_message_body(void) const
 {
-    delete _message;
+	return (_message->get_body());
 }
 
-Message *HandleMessage::get_message() const
+/*	Returns a pointer to the actual Message member.	*/
+Message*	HandleMessage::get_message(void) const
 {
-    return _message;
+	return (_message);
 }
 
-void HandleMessage::set_message(Message *x)
+/*	Sets a new message to hold by the Message member.	*/
+void	HandleMessage::set_message(Message* x)
 {
-    if (!x)
-        return ;
-    _message = x;
+	if (x)
+		_message = x;
 }
 
-void HandleMessage::parse_headers(std::string line)
+/*	This function will parse the line string into a map<str, str> and adds this pair
+	into the headers of the Message member.	*/
+void	HandleMessage::parse_headers(std::string line)
 {
-    std::string key;
-    std::string content;
-    size_t len = line.find(":");
+	std::string	key;
+	std::string	content;
+	size_t		len = line.find(":");
 
-    key = line.substr(0, len);
+	key = line.substr(0, len);
 	content = line.substr(len + 2, line.length() - len - 2);
-
-    _message->add_header(key, content);
+	_message->add_header(key, content);
 }
 
-void HandleMessage::parse_body(std::string body)
+/*	This function will parse the body string (it actually doesn't need to parse)
+	and adds this new body into the Message member.	*/
+void	HandleMessage::parse_body(std::string body)
 {
-    _message->set_body(body);
+	_message->set_body(body);
 }
-
-const std::map<std::string, std::string> &HandleMessage::get_message_header(void) const
-{
-    return _message->get_headers();
-}
-
-const std::string &HandleMessage::get_message_body(void) const
-{
-    return _message->get_body();
-}
-
-
-

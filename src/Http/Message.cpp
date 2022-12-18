@@ -1,51 +1,38 @@
 #include "../../include/Http/Message.hpp"
 
-Message::Message(void) 
+Message::Message()
+{}
+
+Message::~Message()
+{}
+
+/*	Returns a specific header thanks to its key.	*/
+std::string&	Message::get_header(std::string key)
 {
-
+	std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+	return (_headers[key]);
 }
 
-Message::Message(Message const &x)
+/*	Returns all the headers.	*/
+const std::map<std::string, std::string>&	Message::get_headers() const
 {
-    *this = x;
+	return (_headers);
 }
-Message &Message::operator=(Message const &x)
+
+/*	Returns the body of the message.	*/
+const std::string&	Message::get_body() const
 {
-    _headers = x._headers;
-    _body = x._body;
-    return *this;
+	return (_body);
 }
 
-Message::~Message(void)
-{
-    
-}
-
-const std::map<std::string, std::string> &Message::get_headers() const
-{
-    return (_headers);
-}
-
-std::string &Message::get_header(std::string key) 
-{
-    std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-    return (_headers[key]);
-}
-
-const std::string &Message::get_body(void) const
-{ 
-    return (_body);
-}
-
-void Message::add_header(std::string key, const std::string &content)
-{
-    // std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-    _headers.insert(std::pair<std::string, std::string>(key, content));
-
-}
-
-void Message::set_body(const std::string & body)
+/*	Sets the body of the message.	*/
+void	Message::set_body(const std::string& body)
 {
 	_body = body;
 }
 
+/* Adds a header (map<str, str>) to all the headers already existing in the message.	*/
+void	Message::add_header(std::string key, const std::string& content)
+{
+	_headers.insert(std::pair<std::string, std::string>(key, content));
+}

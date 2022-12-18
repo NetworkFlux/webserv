@@ -29,5 +29,5 @@
 
 
 // Utils Functions
-bool	charInStr(const char& c, const std::string& str);
-std::string toString(const int& value);
+bool		charInStr(const char& c, const std::string& str);
+std::string	toString(const int& value);

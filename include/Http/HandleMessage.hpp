@@ -2,26 +2,28 @@
 
 #include "Message.hpp"
 
+/*	This class will be responsible for handeling its message.	*/
 class HandleMessage
 {
-
-    protected:
-		Message		*_message;
-
-	public:
-		HandleMessage(void);
-		HandleMessage(HandleMessage const & x);
-		virtual ~HandleMessage(void);
-		HandleMessage &	operator=(HandleMessage const &x);
-
-
-		const std::map<std::string, std::string> &get_message_header(void) const;
-		const std::string &get_message_body(void) const;
-
-		Message *get_message() const;
-		void 	set_message(Message *x);
-
+	// Member Variables
 	protected:
-		void parse_headers(std::string line);
-		void parse_body(std::string body);
+		Message*	_message;
+
+	// Constructors
+	public:
+		HandleMessage();
+		virtual ~HandleMessage();
+
+	// Getters/Setters
+	public:
+		const std::map<std::string, std::string>&	get_message_header(void) const;
+		const std::string&							get_message_body(void) const;
+		Message*									get_message(void) const;
+
+		void	set_message(Message* x);
+
+	// Member Functions
+	protected:
+		void	parse_headers(std::string line);
+		void	parse_body(std::string body);
 };

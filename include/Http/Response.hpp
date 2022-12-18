@@ -2,25 +2,29 @@
 
 #include "Message.hpp"
 
-
+/*	This class will hold all the informations required for a server response to
+	the client.	*/
 class Response : public Message
 {
-    
-    private:
-        std::string _protocol;
-        std::string _status;
-        std::string _reason;
-    public:
-        Response();
-        Response(Response const &x);
-        ~Response();
-    
-        std::string const &get_protocol(void);
-        std::string const &get_status(void);
-        std::string const &get_reason(void);
+	// Member Variables
+	private:
+		std::string	_protocol;
+		std::string	_status;
+		std::string	_reason;
 
-        void set_protocol(std::string const &method);
-        void set_status(std::string const &uri);
-        void set_reason(std::string const &version);
+	// Constructors
+	public:
+		Response();
+		~Response();
 
+	// Getters/Setters
+	public:
+		const std::string&	get_protocol(void);
+		const std::string&	get_status(void);
+		const std::string&	get_reason(void);
+
+		void	set_protocol(const std::string& version);
+		void	set_status(const std::string& status);
+		void	set_reason(const std::string& reason);
 };
+

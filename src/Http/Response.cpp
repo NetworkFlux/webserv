@@ -1,48 +1,48 @@
 #include "../../include/Http/Response.hpp"
 
-Response::Response() 
+/*	Initialize the member to empty strings.	*/
+Response::Response()
 {
-    _protocol = "";
-    _status = "";
-    _reason = "";
-}
-
-Response::Response(Response const &x)
-{
-    *this = x;
+	_protocol = "";
+	_status = "";
+	_reason = "";
 }
 
 Response::~Response()
-{
+{}
 
+/*	Return the requested protocol version.	*/
+const std::string&	Response::get_protocol(void)
+{
+	return (_protocol);
 }
 
-std::string const &Response::get_protocol(void)
+/*	Return the requested status.	*/
+const std::string&	Response::get_status(void)
 {
-    return _protocol;
+	return (_status);
 }
 
-std::string const & Response::get_status(void)
+/*	Return the requested reason.	*/
+const std::string&	Response::get_reason(void)
 {
-    return _status;
+	return (_reason);
 }
 
-std::string const &Response::get_reason(void)
+/*	Set the requested protocol version.	*/
+void	Response::set_protocol(const std::string& version)
 {
-    return _reason;
+	_protocol = version;
 }
 
-void Response::set_protocol(std::string const &protocol)
+/*	Set the requested status.	*/
+void	Response::set_status(const std::string& status)
 {
-    _protocol = protocol; 
-}
-    
-void Response::set_status(std::string const &status)
-{
-    _status = status;
+	_status = status;
 }
 
-void Response::set_reason(std::string const &reason)
+/*	Set the requested reason.	*/
+void	Response::set_reason(const std::string& reason)
 {
-    _reason = reason;
+	_reason = reason;
 }

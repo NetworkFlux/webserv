@@ -1,47 +1,48 @@
 #include "../include/Http/Request.hpp"
 
+/*	Initialize the member to empty strings.	*/
 Request::Request()
 {
-    _method = "";
-    _path  = "";
-    _protocol = "";
-}
-
-Request::Request(Request const &x)
-{
-    *this = x;
+	_method = "";
+	_path = "";
+	_protocol = "";
 }
 
 Request::~Request()
-{
+{}
 
+/*	Return the requested method.	*/
+const std::string&	Request::get_method(void)
+{
+	return (_method);
 }
 
-void Request::set_method(std::string const &method)
+/*	Return the requested path.	*/
+const std::string&	Request::get_path(void)
 {
-    _method = method;
+	return (_path);
 }
 
-void Request::set_path(std::string const &path)
+/*	Return the requested protocol version.	*/
+const std::string&	Request::get_protocol(void)
 {
-    _path = path;
+	return (_protocol);
 }
 
-void Request::set_protocol(std::string const &protocol)
+/*	Set the requested method.	*/
+void	Request::set_method(const std::string& method)
 {
-    _protocol = protocol;
+	_method = method;
 }
 
-std::string const &Request::get_method(void)
+/*	Set the requested path.	*/
+void	Request::set_path(const std::string& uri)
 {
-    return _method;
+	_path = uri;
 }
 
-std::string const &Request::get_path(void)
+/*	Set the requested protocol version.	*/
+void	Request::set_protocol(const std::string& version)
 {
-    return _path;
-}
-std::string const &Request::get_protocol(void)
-{
-    return _protocol;
+	_protocol = version;
 }

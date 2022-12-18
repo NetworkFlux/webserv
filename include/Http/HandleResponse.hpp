@@ -1,28 +1,34 @@
 #pragma once
 
 #include "Response.hpp"
-#include "HandleRequest.hpp"
 #include "HandleMessage.hpp"
+#include "HandleRequest.hpp"
 
-
+/*	This class is responsible for the respond message the server must send to
+	the client. Of cours the response must be pretty specific and that is what this
+	class is supposed to do.	*/
 class HandleResponse : public HandleMessage
 {
-    private:
-		Response	*_response;
-		std::string _string_response;
+	// Member Variables
+	private:
+		Response*	_response;
+		std::string	_string_response;
 
+	// Constructors
 	public:
-		HandleResponse(void);
-		HandleResponse(HandleResponse const & x);
-		~HandleResponse(void);
-		HandleResponse &	operator=(HandleResponse const &x);
+		HandleResponse();
+		~HandleResponse();
 
-		void set_status_line(std::string , std::string, std::string);
-		void set_body(std::string body);
-		void make_string_response();
+	// Getters/Setters
+	public:
+		Response&			get_response(void);
+		const std::string&	get_string_response(void);
 
-		void make_header(std::string const& body);
+		void	set_status_line(std::string protocol, std::string status, std::string reason);
+		void	set_body(std::string body);
 
-		std::string const &get_string_response(void);
-		Response &get_response(void);
+	// Member Functions
+	public:
+		void	make_string_response(void);
+		void	make_header(const std::string& body);
 };

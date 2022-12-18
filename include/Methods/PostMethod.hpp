@@ -1,14 +1,16 @@
 #pragma once
 
-#include "Method.hpp"
+#include "AMethod.hpp"
 
+/*	This class handles the behaviour of POST methods.	*/
 class PostMethod : public Method
 {
-    private:
+	// Constructors
+	public:
+		PostMethod();
+		~PostMethod();
 
-    public:
-        PostMethod();
-        ~PostMethod();
-
-        void do_method(HandleRequest *hand_req, HandleResponse *hand_resp);
+	// Member Functions
+	public:
+		void	do_method(HandleRequest* hand_req, HandleResponse* hand_resp);
 };
