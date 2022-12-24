@@ -19,7 +19,7 @@ const std::string&	GetMethod::get_body_content(void)
 	and makes a response according to thoses asked ressources.	*/
 void	GetMethod::do_method(HandleRequest* hand_req, HandleResponse* hand_resp)
 {
-	std::string			path = "html_test";
+	std::string			path = "www";
 	std::stringstream	buffer;
 	std::ifstream		ifs;
 

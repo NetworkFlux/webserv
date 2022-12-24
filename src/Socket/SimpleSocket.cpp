@@ -25,3 +25,8 @@ void SimpleSocket::testConnection(int toTest, std::string errorMessage)
 		exit(EXIT_FAILURE);
 	}
 }
+
+int		SimpleSocket::get_sock_fd(void)
+{
+	return (_sockFD);
+}

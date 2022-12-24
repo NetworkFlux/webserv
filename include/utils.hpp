@@ -26,6 +26,17 @@
 #include <cstdlib>
 #include <algorithm>
 #include <cctype>
+#include <sys/poll.h>
+#include <poll.h>
+#include <stdarg.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <string>
+#include <fcntl.h>
+
+#define TRUE		1
+#define FALSE		0
 
 
 // Utils Functions

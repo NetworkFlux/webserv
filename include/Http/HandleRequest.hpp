@@ -33,34 +33,34 @@ class HandleRequest : public HandleMessage
 		void	check_first_line(void);
 };
 
-#pragma once
+// #pragma once
 
-#include "Response.hpp"
-#include "HandleMessage.hpp"
-#include "HandleRequest.hpp"
+// #include "Response.hpp"
+// #include "HandleMessage.hpp"
+// #include "HandleRequest.hpp"
 
-class HandleResponse : public HandleMessage
-{
-	// Member Variables
-	private:
-		Response*	_response;
-		std::string	_string_response;
+// class HandleResponse : public HandleMessage
+// {
+// 	// Member Variables
+// 	private:
+// 		Response*	_response;
+// 		std::string	_string_response;
 
-	// Constructors
-	public:
-		HandleResponse();
-		~HandleResponse();
+// 	// Constructors
+// 	public:
+// 		HandleResponse();
+// 		~HandleResponse();
 
-	// Getters/Setters
-	public:
-		Response&		get_respone(void);
-		std::string&	get_string_response(void);
+// 	// Getters/Setters
+// 	public:
+// 		Response&		get_respone(void);
+// 		std::string&	get_string_response(void);
 
-		void	set_status_line(std::string, std::string, std::string);
-		void	set_body(std::string body);
+// 		void	set_status_line(std::string, std::string, std::string);
+// 		void	set_body(std::string body);
 
-	// Member Functions
-	public:
-		void	make_string_response(void);
-		void	make_header(const std::string& body);
-};
+// 	// Member Functions
+// 	public:
+// 		void	make_string_response(void);
+// 		void	make_header(const std::string& body);
+// };

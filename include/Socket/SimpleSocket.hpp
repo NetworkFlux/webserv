@@ -1,12 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <unistd.h>
-#include <stdarg.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string>
+#include "../utils.hpp"
+
 
 
 /*	This is the Base Socket Class, it handels the creation and deltion
@@ -26,6 +21,7 @@ class SimpleSocket
 	public:
 		SimpleSocket(int domain, int type, int protocol);
 		~SimpleSocket();
+		int		get_sock_fd(void);
 
 	// Unused Operator Overload
 	private:

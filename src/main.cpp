@@ -14,7 +14,8 @@ int	main(int argc, char **argv)
 	ServerConfig	config(argv[1]); // Easy way to launch the parsing
 	WebServer		web_server; // Create  WebServer with all the servers configs
 
-	web_server.listen(&config);
+	web_server.createServers(config);
+	web_server.runServers();
 	
 	return (0);
 }
