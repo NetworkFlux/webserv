@@ -12,5 +12,5 @@ class PostMethod : public Method
 
 	// Member Functions
 	public:
-		void	do_method(HandleRequest* hand_req, HandleResponse* hand_resp);
+		void	do_method(HandleRequest* hand_req, HandleResponse* hand_resp, ServerConfig* config);
 };

@@ -18,9 +18,9 @@ server {
 
 	# When / is asked, we serve a simple HTML file.
 	location / {
-		root /www;
+		root www;
 		method GET;
-		index ./homepage.html;
+		index /index.html;
 	}
 
 	# /upload location is a location that able file upload on the server.
