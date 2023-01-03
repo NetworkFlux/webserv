@@ -1,22 +1,27 @@
 #include "../include/WebServer.hpp"
 
-WebServer::WebServer(void)
+WebServer::WebServer(ServerConfig& config) : _sockets_list(), _str_req(), _str_rep()
 {
-	_str_rep = "";
-	_str_req = "";
+	_config = &config;
 	_nfds = 0;
+	_close = false;
 }
 
-WebServer::~WebServer(void)
-{}
+WebServer::~WebServer()
+{
+}
 
+void	WebServer::printInfo(void)
+{
+	_config->printInfo();
+}
 
 /* Create all server instances */
-void	WebServer::createServers(ServerConfig &config)
+void	WebServer::createServers(void)
 {
-	for (; _nfds < config._servConf.size(); _nfds++)
+	for (; _nfds < _config->_servConf.size(); _nfds++)
 	{
-		ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(config._servConf[_nfds]._listen[0]), INADDR_ANY);
+		ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(_config->_servConf[_nfds]._listen[0]), INADDR_ANY); // index 0 should not stay like that
 		s->socketConf();
 		s->listeningMode(5);
 		_fds[_nfds].fd = s->get_sock_fd();
@@ -40,7 +45,7 @@ void WebServer::runServers()
 		}
 		if (ret == 0) {
 			std::cout << "poll timed out" << std::endl;
-    		return ;
+			return ;
 		}
 		for (size_t index = 0; index < _nfds; index++)
 		{
@@ -94,7 +99,7 @@ void WebServer::handleServer(int index)
 			}
 			if (_close)
 			{
-				std::cout << "close connection pollFd  = " << _fds[index].fd << "\n" <<std::endl;
+				std::cout << "close connection pollFd = " << _fds[index].fd << "\n" <<std::endl;
 				close(_fds[index].fd);
 				current->shrink_socket_clients(_fds[index].fd);
 				shrink_poll_fd(_fds[index].fd);
@@ -102,7 +107,6 @@ void WebServer::handleServer(int index)
 		}
 	}
 }
-
 
 void	WebServer::shrink_poll_fd(int fd)
 {
@@ -120,12 +124,10 @@ void	WebServer::shrink_poll_fd(int fd)
 	}
 }
 
-
 void	WebServer::handle_client()
 {
-	HandleHttp *handl = new HandleHttp();
-
-	_str_rep = handl->do_work(_str_req);
-
-	delete(handl);
+	HandleHttp	handle(get_first_line(_str_req), _config);
+	handle.show_request();
+	handle.do_work();
+	_str_rep = handle.get_response().give_response();
 }

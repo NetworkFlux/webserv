@@ -10,38 +10,27 @@ server {
 	listen 80 localhost;
 	server_name localhost;
 
-	error_page 404 ./404.html;
-	error_page 403 ./403.html;
-	error_page 500 ./500.html;
+	error_page 401 /401.html
+	error_page 403 /403.html;
+	error_page 404 /404.html;
+	error_page 405 /405.html;
+	error_page 418 /418.html;
 
 	client_max_body_size 500K;
 
-	# When / is asked, we serve a simple HTML file.
+	root www;
+
 	location / {
-		root www;
-		method GET;
-		index /index.html;
+		method GET POST;
+		index /index.html /index.htm;
 	}
 
-	# /upload location is a location that able file upload on the server.
+	
+
 	location /upload {
 		method POST;
-		upload_enable on;
-		upload_path /tmp/uploads/;
+		index /post_page.html;
 	}
+
 }
 
-# A server on port 5000 serving php files.
-server {
-	listen 5000 localhost;
-	server_name localhost 127.0.0.1;
-
-	location / {
-		root /home/42/website;
-		autoindex off;
-
-		# CGI on files ending with .php.
-		cgi_extension php;
-		cgi_path localhost:9000;
-	}
-}

@@ -1,40 +1,19 @@
-CC			= c++ -Wall -Wextra -Werror -std=c++98 -g -fsanitize=address
-RM			= rm -rf
-NAME		= ./webserv
-NAME_SHORT	= webserv
+CC = c++
+CFLAGS = -Wall -Werror -Wextra -std=c++98 -I include
+SRC_DIR = src
+OBJ_DIR = obj
+SOURCES = $(shell find $(SRC_DIR) -type f -name "*.cpp")
+OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+EXECUTABLE = webserv
 
-INC_DIR		= include
-MAIN_INC	= -I$(INC_DIR)
-INC			= $(shell find $(INC_DIR) -type f -name "*.hpp")
+all: $(EXECUTABLE)
 
-SRC_DIR		= src
-SRC			= $(shell find $(SRC_DIR) -type f -name "*.cpp")
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJECTS) -I include -o $@
 
-OBJ			= $(SRC:.cpp=.o)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -I include -c $< -o $@
 
-_COLOR		= \033[32m
-_BOLDCOLOR	= \033[32;1m
-_RESET		= \033[0m
-_CLEAR		= \033[0K\r\c
-_OK			= [\033[32mOK\033[0m]
-
-%.o			: %.cpp
-			@echo "[..] $(NAME_SHORT)... compiling $*.cpp\r\c"
-			@$(CC) $(MAIN_INC) -c $< -o $@
-			@echo "$(_CLEAR)"
-
-all			: $(NAME)
-
-$(NAME)		: $(OBJ) $(INC)
-			@$(CC) $(OBJ) $(MAIN_INC) -o $(NAME)
-			@echo "$(_OK) $(NAME_SHORT) compiled"
-
-clean		:
-			@$(RM) $(OBJ)
-
-fclean		: clean
-			@$(RM) $(NAME)
-
-re			: fclean all
-
-.PHONY		: all clean fclean re
+clean:
+	rm -rf $(OBJ_DIR) $(EXECUTABLE)

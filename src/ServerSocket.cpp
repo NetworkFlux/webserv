@@ -1,10 +1,10 @@
-#include "../../include/Socket/ServerSocket.hpp"
+#include "../include/WebServer.hpp"
 
-/*	The socket is being created by the parent class but this contructor
-	will setup the sockaddr_in _address to be ready for connection.	*/
 ServerSocket::ServerSocket(int domain, int type, int protocol, int port, u_int32_t interface)
-	: SimpleSocket(domain, type, protocol)
 {
+	_sockFD = socket(domain, type, protocol);
+	if (_sockFD == -1)
+		throw std::runtime_error("Socket creation failed");
 	_connection = -1;
 	_addressLen = 0;
 	bzero(&_address, sizeof(_address));
@@ -13,25 +13,21 @@ ServerSocket::ServerSocket(int domain, int type, int protocol, int port, u_int32
 	_address.sin_port = htons(port);
 }
 
-/*	This destructor will only close the connection file descriptor if it was
-	previously opened.	*/
 ServerSocket::~ServerSocket()
 {
-	std::cout << "closing";
+	std::cout << "Closing Server";
 	if (_connection != -1)
 		close(_connection);
 }
 
-/*	This function will bind the socket with the setup address and make the socket passive
-	and responsible to listen for incoming connections.	*/
 void	ServerSocket::listeningMode(int maxIncoming)
 {
-	testConnection(bind(_sockFD, (struct sockaddr *)&_address, sizeof(_address)), "Failed to bind to port.\n");
-	testConnection(listen(_sockFD, maxIncoming), "Failed to listen on socket.\n");
+	if ((bind(_sockFD, (struct sockaddr *)&_address, sizeof(_address))) < 0)
+		throw std::runtime_error("Failed to bind to port");
+	if ((listen(_sockFD, maxIncoming)) < 0)
+		throw std::runtime_error("Failed to listen on socket");
 }
 
-/*	If the socket is in listening mode it will wait for incoming connections and and read
-	from the connection if a connection is established.	*/
 void	ServerSocket::grabConnection(void)
 {
 	int new_socket = 0;
@@ -72,6 +68,7 @@ std::string		ServerSocket::readConnection(struct pollfd	*ptr_tab_poll)
 	if (bytesRead < 0)
 	{
 		perror("Failed to read,\n");
+		std::cout << strerror(errno) << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	return (_request);
@@ -83,6 +80,7 @@ int		ServerSocket::giveResponse(struct pollfd *ptr_tab_poll, std::string message
 	int ret;
 	int	fd = ptr_tab_poll->fd;
 
+	std::cout << YELLOW_B << "Response: " << std::endl << YELLOW << message.c_str() << NONE << std::endl << std::endl;
 	ret = send(fd, message.c_str(), message.size(), 0);
 	ptr_tab_poll->events = POLLIN;
 	return ret;
@@ -93,7 +91,7 @@ void	ServerSocket::socketConf()
 	int on = 1;
 	int rc;
 
-	rc = setsockopt(_sockFD, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on));
+	rc = setsockopt(_sockFD, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
   	if (rc < 0)
   	{
 		perror("setsockopt() failed");
@@ -109,6 +107,11 @@ void	ServerSocket::socketConf()
   	}
 }
 
+std::vector<int>&	ServerSocket::get_socket_client()
+{
+	return _socket_clients;
+}
+
 void	ServerSocket::shrink_socket_clients(int to_find)
 {
 	for (std::vector<int>::iterator it = _socket_clients.begin(); it !=  _socket_clients.end() ; it++)
@@ -121,8 +124,7 @@ void	ServerSocket::shrink_socket_clients(int to_find)
 	}
 }
 
-
-std::vector<int>&	ServerSocket::get_socket_client()
+int		ServerSocket::get_sock_fd(void)
 {
-	return _socket_clients;
+	return (_sockFD);
 }

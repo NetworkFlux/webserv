@@ -3,7 +3,8 @@
 #include "../utils.hpp"
 
 /*	This class contains every information that can be find in the config file.
-	All the attributes find in the server section are here.	*/
+*	All the attributes find in the server section are here.
+*/
 class SimpleConfig
 {
 	// Member Variables

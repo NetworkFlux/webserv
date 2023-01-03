@@ -1,14 +1,12 @@
 #pragma once
 
-#include "SimpleSocket.hpp"
+#include "utils.hpp"
 
-#define BUFFER_SIZE 4096
-
-/*	This Socket must be utilized by a server	*/
-class ServerSocket : public SimpleSocket
+class ServerSocket
 {
 	// Member Variables
 	private:
+		int					_sockFD; // File Descriptor to the Socket
 		sockaddr_in			_address;
 		int					_addressLen;
 		int					_connection; // File Descriptor to the established connection
@@ -16,26 +14,19 @@ class ServerSocket : public SimpleSocket
 		std::string 		_request;
 		std::vector<int> 	_socket_clients;
 
-	// Unused Constructors
-	private:
-		ServerSocket();
-		ServerSocket(const ServerSocket& src);
-
 	// Constructors
 	public:
 		ServerSocket(int domain, int type, int protocol, int port, u_int32_t interface);
 		~ServerSocket();
-
-	// Unused Operator Overload
-		ServerSocket&	operator=(const ServerSocket& other);
-
+	
 	// Member Functions
 	public:
 		void				listeningMode(int maxIncoming);
 		void				grabConnection(void);
-		int					giveResponse(struct pollfd *ptr_tab_poll, std::string message);
 		std::string			readConnection(struct pollfd *ptr_tab_poll);
+		int					giveResponse(struct pollfd *ptr_tab_poll, std::string message);
 		void 				socketConf();
-		std::vector<int> &	get_socket_client();
+		std::vector<int>&	get_socket_client();
 		void 				shrink_socket_clients(int to_find);
+		int					get_sock_fd(void);
 };

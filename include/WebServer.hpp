@@ -1,31 +1,32 @@
 #pragma once
 
 #include "Config/ServerConfig.hpp"
-#include "../include/Socket/ServerSocket.hpp"
-#include "../include/Http/HandleHttp.hpp"
+#include "ServerSocket.hpp"
+#include "HandleHttp.hpp"
 
 class WebServer
 {
-	// Private attrbutes
+	// Private Variables
 	private:
-		std::vector<ServerSocket*>		_sockets_list;
-		struct pollfd					_fds[200];
-		size_t 							_nfds;
+		ServerConfig*					_config;	// Config object
+		std::vector<ServerSocket*>		_sockets_list;	// List of all the sockets
+		struct pollfd					_fds[OPEN_MAX];	// List of all the fds
+		size_t							_nfds;		// Number of fds
+		std::string						_str_req;	// String request
+		std::string						_str_rep;	//	String reply
 		bool							_close;
-		std::string 					_str_req;
-		std::string 					_str_rep;
-		
-		// bool _compress_pollFds;
 
 	// Constructors
 	public:
-		WebServer();
+		WebServer(ServerConfig& config);
 		~WebServer();
 
 	// Member Functions
-		void			createServers(ServerConfig &config);
-		void 			runServers();;
-		void 			handleServer(int ind);
-		void			shrink_poll_fd(int fd);
-		void			handle_client();
+	public:
+		void	printInfo(void);
+		void	createServers(void);
+		void 	runServers(void);
+		void	handleServer(int index);
+		void	shrink_poll_fd(int fd);
+		void	handle_client(void);
 };

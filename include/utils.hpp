@@ -1,6 +1,7 @@
 #pragma once
 
-#define RESET	"\033[m"
+// Colors
+#define NONE	"\033[m"
 #define PURPLE	"\033[0;35m"
 #define BLUE	"\033[0;34m"
 #define YELLOW	"\033[0;33m"
@@ -8,8 +9,7 @@
 #define RED		"\033[0;31m"
 #define GREY	"\033[0;30m"
 
-
-#define RESET_B		"\033[m"
+// Bold Colors
 #define PURPLE_B	"\033[1;35m"
 #define BLUE_B		"\033[1;34m"
 #define YELLOW_B	"\033[1;33m"
@@ -17,6 +17,7 @@
 #define RED_B		"\033[1;31m"
 #define GREY_B		"\033[1;30m"
 
+// Includes
 #include <iostream>
 #include <unistd.h>
 #include <string>
@@ -34,11 +35,16 @@
 #include <arpa/inet.h>
 #include <string>
 #include <fcntl.h>
+#include <fstream>
 
-#define TRUE		1
-#define FALSE		0
+// Defines
+#define BUFFER_SIZE 4096
 
-
-// Utils Functions
+// Helper Functions
+std::vector<std::string> splitLine(const std::string& line, const std::string& sep);
 bool		charInStr(const char& c, const std::string& str);
-std::string	toString(const int& value);
+long		convertToByte(const std::string& value);
+std::string	get_first_line(const std::string& str);
+bool file_exists(const std::string& fileName);
+std::vector<char> readBinaryFile(const std::string& fileName);
+bool is_in_vector(const std::vector<std::string>& vec, const std::string& str);

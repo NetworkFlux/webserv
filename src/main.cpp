@@ -1,6 +1,3 @@
-#include "../include/Socket/ServerSocket.hpp"
-#include "../include/Socket/ClientSocket.hpp"
-#include "../include/Config/ServerConfig.hpp"
 #include "../include/WebServer.hpp"
 
 int	main(int argc, char **argv)
@@ -12,10 +9,9 @@ int	main(int argc, char **argv)
 	}
 
 	ServerConfig	config(argv[1]); // Easy way to launch the parsing
-	WebServer		web_server; // Create  WebServer with all the servers configs
-
-	web_server.createServers(config);
-	web_server.runServers();
-	
+	WebServer		web_server(config); // Create WebServer with all the servers configs
+	web_server.printInfo(); // Print all the servers configs
+	web_server.createServers(); // Create all the servers
+	web_server.runServers(); // Run all the servers
 	return (0);
 }

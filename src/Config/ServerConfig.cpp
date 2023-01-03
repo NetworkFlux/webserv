@@ -1,7 +1,9 @@
 #include "../../include/Config/ServerConfig.hpp"
 
-/*	This constructor will parsed the configuration file and store all its informations
-	in the ServerConfig class making its data usable for use.	*/
+/*	This constructor will parsed the configuration file and store
+*	all its informations in the ServerConfig class making its
+*	data usable for use.
+*/
 ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 {
 	std::string	line;
@@ -101,59 +103,13 @@ ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 ServerConfig::~ServerConfig()
 {}
 
-/*	This function will split a string into its individual words enabeling easy parsing.	*/
-std::vector<std::string>	ServerConfig::splitLine(const std::string& line, const std::string& sep) const
-{
-	std::vector<std::string>	res;
-	std::string	temp;
-	size_t	i = 0;
-
-	while (line[i] == ' ' || line[i] == '\t')
-		i++;
-	while (i < line.length())
-	{
-		if (charInStr(line[i], sep) && temp.length() != 0)
-		{
-			res.push_back(temp);
-			temp.clear();
-		}
-		else
-			temp.append(1, line[i]);
-		i++;
-	}
-	return (res);
-}
-
-/*	This functions converts a string like "15G" to the number of bytes in 15 GigaBytes.	*/
-long		ServerConfig::convertToByte(const std::string& value)
-{
-	long	res = 0;
-	std::string	unit;
-
-	for (size_t i = 0; i < value.size(); i++)
-	{
-		if (isdigit(value[i]))
-			res = (res * 10) + (value[i] - 48);
-		else
-			unit.append(1, value[i]);
-	}
-	std::cout << res;
-	if (unit == "G")
-		return (res * 1073741824);
-	else if (unit == "k")
-		return (res * 1024);
-	else if (unit == "M")
-		return (res * 1048576);
-	else
-		return (res);
-}
-
-/*	This function will output all the data stored in a ServerConfig object, usefull for
-	troubleshooting. It outputs the data for each server.	*/
+/*	This function will output all the data stored in a ServerConfig object,
+*	usefull for troubleshooting. It outputs the data for each server.
+*/
 void	ServerConfig::printInfo(void)
 {
 	// Print Title
-	std::cout << YELLOW_B <<"-- SERVER CONFIGURATION --" << RESET << std::endl << std::endl;
+	std::cout << YELLOW_B <<"-- SERVER CONFIGURATION --" << NONE << std::endl << std::endl;
 	for (size_t i = 0; i < _servConf.size(); i++)
 	{
 		std::cout << GREEN_B << "\t| Server " << (i + 1) << " |" << std::endl;
