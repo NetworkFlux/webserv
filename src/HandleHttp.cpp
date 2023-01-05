@@ -14,9 +14,10 @@ Response&	HandleHttp::get_response(void)
 	return (_response);
 }
 
-void	HandleHttp::do_work(void)
+void	HandleHttp::do_work(size_t serv_index)
 {
-	SimpleConfig	config = _serverConfig->_servConf.front(); // Needs to be changed (only looking for the first server)
+	std::cout << RED << serv_index << NONE << std::endl;
+	SimpleConfig	config = _serverConfig->_servConf[static_cast<unsigned int>(serv_index)]; // Needs to be changed (only looking for the first server)
 	std::map<std::string, SimpleConfig>::iterator	it;
 
 	// This implementation will only work for GET requests
@@ -57,6 +58,7 @@ void	HandleHttp::do_work(void)
 
 			// If we get here it means we encounterd no errors and we can setup a
 			// valid response with the data given.
+			
 			_response.set_status_line("HTTP/1.1", 200 ,"OK");
 		}
 		else
@@ -92,7 +94,6 @@ bool	HandleHttp::check_method_allowed(const std::vector<std::string>& methods, c
 		_final_path = "www/405.html";
 		return (true);
 	}
-	std::cout << "Method allowed" << std::endl;
 	return (false);
 }
 

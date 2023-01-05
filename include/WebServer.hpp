@@ -28,5 +28,5 @@ class WebServer
 		void 	runServers(void);
 		void	handleServer(int index);
 		void	shrink_poll_fd(int fd);
-		void	handle_client(void);
+		void	handle_client(size_t serv_index);
 };

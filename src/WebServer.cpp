@@ -21,7 +21,7 @@ void	WebServer::createServers(void)
 {
 	for (; _nfds < _config->_servConf.size(); _nfds++)
 	{
-		ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(_config->_servConf[_nfds]._listen[0]), INADDR_ANY); // index 0 should not stay like that
+		ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(_config->_servConf[_nfds]._listen[0]), INADDR_ANY, _nfds); // index 0 should not stay like that
 		s->socketConf();
 		s->listeningMode(5);
 		_fds[_nfds].fd = s->get_sock_fd();
@@ -64,6 +64,7 @@ void WebServer::handleServer(int index)
 	int		old_size;
 	int		ret;
 
+
 	for (std::vector<ServerSocket*>::iterator it = _sockets_list.begin(); it != _sockets_list.end(); it++)
 	{
 		ServerSocket *current = *it.base();
@@ -80,6 +81,7 @@ void WebServer::handleServer(int index)
 				_fds[_nfds].revents = 0;
 				_nfds++;
 			}
+
 		}
 		else if ((std::find(current_socket_client.begin(), current_socket_client.end(), _fds[index].fd)) != current_socket_client.end())
 		{
@@ -94,7 +96,7 @@ void WebServer::handleServer(int index)
 			}
 			else if ((_str_req = current->readConnection(&_fds[index])).size() > 0)
 			{
-				handle_client();
+				handle_client(current->get_serv_index());
 				_fds[index].events = POLLOUT;
 			}
 			if (_close)
@@ -124,10 +126,10 @@ void	WebServer::shrink_poll_fd(int fd)
 	}
 }
 
-void	WebServer::handle_client()
+void	WebServer::handle_client(size_t serv_index)
 {
 	HandleHttp	handle(get_first_line(_str_req), _config);
 	handle.show_request();
-	handle.do_work();
+	handle.do_work(serv_index);
 	_str_rep = handle.get_response().give_response();
 }

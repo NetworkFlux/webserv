@@ -13,16 +13,21 @@ class ServerSocket
 		char				_buffer[BUFFER_SIZE];
 		std::string 		_request;
 		std::vector<int> 	_socket_clients;
+		size_t				_serv_index;
+
 
 	// Constructors
 	public:
-		ServerSocket(int domain, int type, int protocol, int port, u_int32_t interface);
+		ServerSocket(int domain, int type, int protocol, int port, u_int32_t interface, size_t serv_index);
 		~ServerSocket();
-	
+
+	public:
+		size_t	get_serv_index();
+
 	// Member Functions
 	public:
 		void				listeningMode(int maxIncoming);
-		void				grabConnection(void);
+		int					grabConnection(void);
 		std::string			readConnection(struct pollfd *ptr_tab_poll);
 		int					giveResponse(struct pollfd *ptr_tab_poll, std::string message);
 		void 				socketConf();
