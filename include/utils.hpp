@@ -48,3 +48,4 @@ std::string	get_first_line(const std::string& str);
 bool file_exists(const std::string& fileName);
 std::vector<char> readBinaryFile(const std::string& fileName);
 bool is_in_vector(const std::vector<std::string>& vec, const std::string& str);
+size_t find_in_str(const std::string& location, const std::string& req_path);

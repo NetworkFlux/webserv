@@ -89,3 +89,18 @@ bool is_in_vector(const std::vector<std::string>& vec, const std::string& str)
 	}
 	return (false);
 }
+
+/*
+	This function will find if the string find is in the string str.
+	The find string MUST be at the beginning of the str string.
+*/
+size_t find_in_str(const std::string& location, const std::string& req_path)
+{
+	size_t	i = 0;
+	for (i = 0; i < location.length(); i++)
+	{
+		if (location[i] != req_path[i])
+			return (0);
+	}
+	return (i);
+}

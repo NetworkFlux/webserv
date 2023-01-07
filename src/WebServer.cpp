@@ -128,8 +128,8 @@ void	WebServer::shrink_poll_fd(int fd)
 
 void	WebServer::handle_client(size_t serv_index)
 {
-	HandleHttp	handle(get_first_line(_str_req), _config);
+	HandleHttp	handle(get_first_line(_str_req), _config, serv_index);
 	handle.show_request();
-	handle.do_work(serv_index);
+	handle.do_work();
 	_str_rep = handle.get_response().give_response();
 }
