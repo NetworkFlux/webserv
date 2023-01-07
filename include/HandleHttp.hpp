@@ -4,42 +4,38 @@
 #include "Messages/Response.hpp"
 #include "Config/ServerConfig.hpp"
 
-/*	This class is responsible for handeling requests and responses.
-	It will be given the client request and must build a response depending
-	on what is allowed by the configuration file.
-*/
-
 class HandleHttp
 {
-	// Member variables
+	// Member Variables
 	private:
 		Request			_request;
 		Response		_response;
-		ServerConfig*	_serverConfig;
+		SimpleConfig	_config;
+		std::string		_location;
+		std::string		_req_path;
 		std::string		_final_path;
 
 	// Constructors
 	public:
-		HandleHttp(const std::string& request_line, ServerConfig* serverConfig);
+		HandleHttp(const std::string& request_line, ServerConfig* serverConfig, size_t serv_index);
 		~HandleHttp();
 
-	// Getters/Setters
+	// Getter/Setters
 	public:
 		Response&	get_response(void);
 
 	// Member Functions
 	public:
-		void		do_work(size_t serv_index);
-
-		bool	check_method_allowed(const std::vector<std::string>& methods, const std::string& method);
-		bool	check_root(const std::string& root);
-		bool	check_index(const std::vector<std::string>& index);
-
-		void	show_request(void);
-		void	show_response(void);
-		void	show_response_status_line(void);
+	void	do_work(void);
+	void	build_response(SimpleConfig& loc_config);
+	void	show_request(void);
+	void	show_response(void);
 
 	// Helper Functions
 	private:
-		
+		void	find_location(void);
+		bool	check_method_allowed(const std::vector<std::string>& loc_methods, const std::vector<std::string>& conf_methods, const std::string& asked_method);
+		bool	check_root(const std::string& root);
+		bool	check_index(const std::vector<std::string>& loc_index, const std::vector<std::string>& conf_index);
+
 };

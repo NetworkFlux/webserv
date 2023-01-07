@@ -32,7 +32,6 @@ void	ServerSocket::listeningMode(int maxIncoming)
 		throw std::runtime_error("Failed to bind to port");
 	if ((listen(_sockFD, maxIncoming)) < 0)
 		throw std::runtime_error("Failed to listen on socket");
-	std::cout << "Listening on port " << ntohs(_address.sin_port) << std::endl;
 }
 
 int	ServerSocket::grabConnection(void)
@@ -79,7 +78,7 @@ std::string ServerSocket::readConnection(struct pollfd *ptr_tab_poll)
         bytesRead = read(ptr_tab_poll->fd, _buffer, BUFFER_SIZE);
         if (bytesRead > 1)
         {
-            std::cout << _buffer << std::endl;
+            // std::cout << _buffer << std::endl;
             _request.append(_buffer);
             if (_buffer[bytesRead - 1] == '\n')
                 break;
