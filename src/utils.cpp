@@ -104,3 +104,9 @@ size_t find_in_str(const std::string& location, const std::string& req_path)
 	}
 	return (i);
 }
+
+std::vector<char> str_to_vector(std::string str)
+{
+	std::vector<char> vec(str.begin(), str.end());
+	return (vec);
+}

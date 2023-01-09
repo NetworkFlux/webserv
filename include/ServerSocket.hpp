@@ -28,8 +28,8 @@ class ServerSocket
 	public:
 		void				listeningMode(int maxIncoming);
 		int					grabConnection(void);
-		std::string			readConnection(struct pollfd *ptr_tab_poll);
-		int					giveResponse(struct pollfd *ptr_tab_poll, std::string message);
+		int					readConnection(int fd, std::string *req);
+		int					giveResponse(int fd, std::string message);
 		void 				socketConf();
 		std::vector<int>&	get_socket_client();
 		void 				shrink_socket_clients(int to_find);

@@ -7,7 +7,7 @@
 
 # A simple server on port 80.
 server {
-	listen 80;
+	listen 80, 8080;
 	server_name localhost;
 
 	error_page 401 /401.html
@@ -36,6 +36,31 @@ server {
 
 	location /cgi {
 		method GET POST;
+		index /post_page.html;
+	}
+}
+
+server {
+	listen 18000;
+	server_name localhost;
+
+	error_page 401 /401.html
+	error_page 403 /403.html;
+	error_page 404 /404.html;
+	error_page 405 /405.html;
+	error_page 418 /418.html;
+
+	client_max_body_size 500K;
+
+	root www;
+
+	location / {
+		method GET POST;
+		index /401.html;
+	}
+
+	location /upload {
+		method POST;
 		index /post_page.html;
 	}
 }

@@ -10,8 +10,8 @@ class WebServer
 	private:
 		ServerConfig*					_config;	// Config object
 		std::vector<ServerSocket*>		_sockets_list;	// List of all the sockets
-		struct pollfd					_fds[OPEN_MAX];	// List of all the fds
-		size_t							_nfds;		// Number of fds
+		std::map<int, struct kevent> 	_events;		// Map that lists active event for each fd
+		int 							_kq;			// FD of the kqueue	
 		std::string						_str_req;	// String request
 		std::string						_str_rep;	//	String reply
 		bool							_close;
@@ -26,7 +26,7 @@ class WebServer
 		void	printInfo(void);
 		void	createServers(void);
 		void 	runServers(void);
-		void	handleServer(int index);
-		void	shrink_poll_fd(int fd);
+		void	handleServer(int fd, int filter);
+		void	shrink_kqueue_fd(int fd);
 		void	handle_client(size_t serv_index);
 };

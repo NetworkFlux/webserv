@@ -68,17 +68,16 @@ int	ServerSocket::grabConnection(void)
 
 /*	If a connection has been made this function will attempt to read from the socket
 	and output the read content.	*/
-std::string ServerSocket::readConnection(struct pollfd *ptr_tab_poll)
+int ServerSocket::readConnection(int fd, std::string *req)
 {
     int bytesRead;
     _request.clear();
     bzero(_buffer, sizeof(_buffer));
     while (true)
     {
-        bytesRead = read(ptr_tab_poll->fd, _buffer, BUFFER_SIZE);
+        bytesRead = read(fd, _buffer, BUFFER_SIZE);
         if (bytesRead > 1)
         {
-            // std::cout << _buffer << std::endl;
             _request.append(_buffer);
             if (_buffer[bytesRead - 1] == '\n')
                 break;
@@ -89,7 +88,7 @@ std::string ServerSocket::readConnection(struct pollfd *ptr_tab_poll)
             if (errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 // read would block, try again
-                continue;
+                break;
             }
             else
             {
@@ -104,18 +103,17 @@ std::string ServerSocket::readConnection(struct pollfd *ptr_tab_poll)
             break;
         }
     }
-    return (_request);
+	*req = _request;
+    return (bytesRead);
 }
 
 /*	This function will send a message to the connection.	*/
-int		ServerSocket::giveResponse(struct pollfd *ptr_tab_poll, std::string message)
+int		ServerSocket::giveResponse(int fd, std::string message)
 {
 	int ret;
-	int	fd = ptr_tab_poll->fd;
 
 	std::cout << YELLOW_B << "Response: " << std::endl << YELLOW << message.c_str() << NONE << std::endl << std::endl;
 	ret = send(fd, message.c_str(), message.size(), 0);
-	ptr_tab_poll->events = POLLIN;
 	return ret;
 }
 

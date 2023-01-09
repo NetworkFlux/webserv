@@ -27,8 +27,6 @@
 #include <cstdlib>
 #include <algorithm>
 #include <cctype>
-#include <sys/poll.h>
-#include <poll.h>
 #include <stdarg.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -36,6 +34,7 @@
 #include <string>
 #include <fcntl.h>
 #include <fstream>
+#include <sys/event.h>
 
 // Defines
 #define BUFFER_SIZE 4096
@@ -49,3 +48,4 @@ bool file_exists(const std::string& fileName);
 std::vector<char> readBinaryFile(const std::string& fileName);
 bool is_in_vector(const std::vector<std::string>& vec, const std::string& str);
 size_t find_in_str(const std::string& location, const std::string& req_path);
+std::vector<char> str_to_vector(std::string str);

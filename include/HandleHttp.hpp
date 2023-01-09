@@ -3,6 +3,7 @@
 #include "Messages/Request.hpp"
 #include "Messages/Response.hpp"
 #include "Config/ServerConfig.hpp"
+#include "CGIServer.hpp"
 
 class HandleHttp
 {
@@ -28,6 +29,7 @@ class HandleHttp
 	public:
 	void	do_work(void);
 	void	build_response(SimpleConfig& loc_config);
+	void	execute_cgi(void);
 	void	show_request(void);
 	void	show_response(void);
 

@@ -48,6 +48,16 @@ const std::string&	Request::get_protocol(void) const
 	return (_protocol);
 }
 
+const std::map<std::string, std::string>&	Request::get_header(void) const
+{
+	return (_header);
+}
+
+const std::string&	Request::get_body(void) const
+{
+	return (_body);
+}
+
 void	Request::set_status_line(const std::string& status_line)
 {
 	_status_line = status_line;
@@ -62,6 +72,40 @@ void	Request::set_path(const std::string& path)
 {
 	_path = path;
 }
+
+void	Request::set_protocol(const std::string& protocol)
+{
+	_protocol = protocol;
+}
+
+void	Request::set_header(const std::string& request)
+{
+	std::stringstream	ss(request);
+	std::string			token;
+	bool				first = false;
+	while (getline(ss, token, '\n'))
+	{
+		if (token == "\r")
+			break ;
+		if (first)
+		{
+			std::istringstream token_iss(token);
+			std::string key, value;
+			std::getline(token_iss, key, ':');
+			std::getline(token_iss, value, ':');
+			_header[key] = value;
+		}
+		first = true;
+	}
+  	std::string remaining_string((std::istreambuf_iterator<char>(ss)), std::istreambuf_iterator<char>());
+	set_body(remaining_string);
+}
+
+void	Request::set_body(const std::string& str)
+{
+	_body = str;
+}
+
 
 void	Request::show_data(void) const
 {

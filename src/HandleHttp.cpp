@@ -1,9 +1,13 @@
 #include "../include/HandleHttp.hpp"
 
-HandleHttp::HandleHttp(const std::string& request_line, ServerConfig* serverConfig, size_t serv_index) : _request(request_line),
+HandleHttp::HandleHttp(const std::string& request_line, ServerConfig* serverConfig, size_t serv_index) : _request(get_first_line(request_line)),
 	_response(), _location(), _final_path()
 {
+	int pos;
 	_req_path = _request.get_path();
+	if ((pos = _req_path.find('?')) != -1)
+		_req_path = _request.get_path().substr(0, pos);
+	_request.set_header(request_line);
 	_config = serverConfig->_servConf[static_cast<unsigned int>(serv_index)];
 	find_location();
 }
@@ -20,7 +24,10 @@ void	HandleHttp::do_work(void)
 		if (!check_method_allowed(loc_config._methods, _config._methods, _request.get_method()))
 			check_index(loc_config._index, _config._index);
 	}
-	build_response(loc_config);
+	if (_location == "/cgi")
+		execute_cgi();
+	else
+		build_response(loc_config);
 }
 
 Response&	HandleHttp::get_response(void)
@@ -64,6 +71,16 @@ void	HandleHttp::build_response(SimpleConfig& loc_config)
 
 	std::cout << RED << "Final Path: " << _final_path << NONE << std::endl;
 	_response.set_body(readBinaryFile(_final_path));
+}
+
+void	HandleHttp::execute_cgi(void)
+{
+	CGIServer cgi("www", _request.get_path(), _request.get_method());
+	std::string response = cgi.run_program(_request.get_header(), _request.get_body());
+	
+	_response.set_body(str_to_vector(response));
+	_response.set_status_line("HTTP/1.1", 200 ,"OK");
+	
 }
 
 void	HandleHttp::show_request()
@@ -111,6 +128,7 @@ bool	HandleHttp::check_root(const std::string& root)
 {
 	if (root.empty() && _config._root.empty())
 	{
+		_final_path = "www";
 		_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
 		return (true);
 	}

@@ -10,10 +10,12 @@ class Request
 {
 	// Member Variables
 	private:
-		std::string	_status_line;
-		std::string	_method;
-		std::string	_path;
-		std::string	_protocol;
+		std::string							_status_line;
+		std::string							_method;
+		std::string							_path;
+		std::string							_protocol;
+		std::string							_body;
+		std::map<std::string, std::string>	_header;
 
 	// Constructors
 	public:
@@ -31,11 +33,15 @@ class Request
 		const std::string&	get_method(void) const;
 		const std::string&	get_path(void) const;
 		const std::string&	get_protocol(void) const;
+		const std::string&	get_body(void) const;
+		const std::map<std::string, std::string>&	get_header(void) const;
 
 		void	set_status_line(const std::string& status_line);
 		void	set_method(const std::string& method);
 		void	set_path(const std::string& path);
 		void	set_protocol(const std::string& protocol);
+		void	set_header(const std::string& request);
+		void	set_body(const std::string& str);
 
 	// Helper Functions
 	public:
