@@ -1,8 +1,11 @@
 #include "../include/HandleHttp.hpp"
 
-HandleHttp::HandleHttp(const std::string& request_line, ServerConfig* serverConfig, size_t serv_index) : _request(get_first_line(request_line)),
+HandleHttp::HandleHttp(const std::string& request_line, ServerConfig* serverConfig, size_t serv_index) : _request(request_line),
 	_response(), _location(), _final_path()
 {
+	_failed_request = false;
+	if (_request.get_status_line().empty())
+		_failed_request = true;
 	int pos;
 	_req_path = _request.get_path();
 	if ((pos = _req_path.find('?')) != -1)
@@ -24,10 +27,15 @@ void	HandleHttp::do_work(void)
 		if (!check_method_allowed(loc_config._methods, _config._methods, _request.get_method()))
 			check_index(loc_config._index, _config._index);
 	}
-	if (_location == "/cgi")
-		execute_cgi();
-	else
-		build_response(loc_config);
+	if (_location == "/upload")
+		upload_file();
+	if (_location == "/delete")
+		delete_file();
+	if (_location == "/redirect")
+		redirection(loc_config);
+	if (_location == "/cgi" && execute_cgi())
+		return ;
+	build_response(loc_config);
 }
 
 Response&	HandleHttp::get_response(void)
@@ -37,7 +45,9 @@ Response&	HandleHttp::get_response(void)
 
 void	HandleHttp::build_response(SimpleConfig& loc_config)
 {
-	if (_response.get_status_code() > 200)
+	if (_failed_request)
+		_response.set_status_line("HTTP/1.1", 400 ,"Bad Request");
+	if (_response.get_status_code() > 200 && _response.get_status_code() < 500)
 	{
 		std::map<int, std::string>::iterator	it = loc_config._errorPages.find(_response.get_status_code());
 		if (it == loc_config._errorPages.end())
@@ -69,24 +79,85 @@ void	HandleHttp::build_response(SimpleConfig& loc_config)
 	else if (_final_path.find("webp") != std::string::npos)
 		_response.set_content_type("image/webp");
 
-	std::cout << RED << "Final Path: " << _final_path << NONE << std::endl;
+	std::cout << RED << "\tFinal Path: " << _final_path << NONE << std::endl << std::endl << std::endl;
 	_response.set_body(readBinaryFile(_final_path));
 }
 
-void	HandleHttp::execute_cgi(void)
+bool	HandleHttp::execute_cgi(void)
 {
+	std::cout << RED << "\tCGI" << NONE << std::endl;
 	CGIServer cgi("www", _request.get_path(), _request.get_method());
 	std::string response = cgi.run_program(_request.get_header(), _request.get_body());
-	
+
+	// if (error)
+	// {
+	// 	_response.set_status_line("HTTP/1.1", 502 ,"Bad Gateway");
+	// 	return (false);
+	// }
+
 	_response.set_body(str_to_vector(response));
 	_response.set_status_line("HTTP/1.1", 200 ,"OK");
-	
+	return (true);
+}
+
+void	HandleHttp::upload_file(void)
+{
+	std::cout << RED << "\tUpload file" << NONE << std::endl;
+	std::string body = _request.get_body();
+	std::vector<std::string> data = splitLine(body, "&");
+
+	std::string file_name = data[0].substr(data[0].find("=") + 1);
+	std::string file_content = data[1].substr(data[1].find("=") + 1);
+
+	// Create file and write content
+	std::ofstream file;
+	std::cout << BLUE_B << "\tFile name: " << ("www" + _location + "/" + file_name) << NONE << std::endl;
+	file.open("www" + _location + "/" + file_name);
+	if (!file)
+	{
+		std::cout << RED << "Error: File not created" << NONE << std::endl;
+		return ;
+	}
+	file << file_content;
+}
+
+void	HandleHttp::delete_file()
+{
+	std::cout << RED << "\tDelete file" << NONE << std::endl;
+	std::string body = _request.get_body();
+	std::string up_files = "www";
+	std::vector<std::string> data = splitLine(body, "&");
+
+	std::string file_name = data[0].substr(data[0].find("=") + 1);
+	up_files += "/upload/";
+	up_files += file_name;
+
+	std::cout << BLUE_B << "\tFile name: " << up_files << NONE << std::endl;
+
+	// Delete file
+	if (remove(up_files.c_str()) != 0)
+	{
+		std::cout << RED << "Error: File not deleted" << NONE << std::endl;
+		return ;
+	}
+}
+
+void	HandleHttp::redirection(SimpleConfig& loc_config)
+{
+	if (loc_config._redirect.empty())
+	{
+		_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
+		return ;
+	}
+	_response.set_status_line("HTTP/1.1", 301 ,"Moved Permanently");
+	_response.add_header("Location", loc_config._redirect);
 }
 
 void	HandleHttp::show_request()
 {
 	_request.show_data();
-	std::cout << RED << "Location: " << _location << NONE << std::endl;
+	std::cout << RED_B << "Processed" << NONE << std::endl;
+	std::cout << RED << "\tLocation: " << _location << NONE << std::endl;
 }
 
 void	HandleHttp::show_response()
@@ -120,7 +191,7 @@ bool	HandleHttp::check_method_allowed(const std::vector<std::string>& loc_method
 		_response.set_status_line("HTTP/1.1", 405 ,"Method Not Allowed");
 		return (true);
 	}
-	std::cout << RED << "Method allowed" << NONE << std::endl;
+	std::cout << RED << "\tMethod allowed" << NONE << std::endl;
 	return (false);
 }
 
@@ -136,7 +207,7 @@ bool	HandleHttp::check_root(const std::string& root)
 		_final_path = root;
 	else
 		_final_path = _config._root;
-	std::cout << RED << "Root: " << _final_path << NONE << std::endl;
+	std::cout << RED << "\tRoot: " << _final_path << NONE << std::endl;
 	return (false);
 }
 
@@ -172,7 +243,7 @@ bool	HandleHttp::check_index(const std::vector<std::string>& loc_index, const st
 	{
 		_final_path += _req_path;
 		_response.set_status_line("HTTP/1.1", 200 ,"OK");
-		std::cout << RED << "File: " << _final_path << NONE << std::endl;
+		std::cout << RED << "\tFile: " << _final_path << NONE << std::endl;
 		return (false);
 	}
 	_response.set_status_line("HTTP/1.1", 403 ,"Forbidden Access");

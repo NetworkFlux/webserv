@@ -17,6 +17,7 @@ class SimpleConfig
 		std::string							_root;			// Path to root
 		long								_maxBody;		// Max length to be converted in bytes
 		std::vector<std::string>			_methods;		// Allowed methods
+		std::string							_redirect;		// Redirect path
 		bool								_upload;		// Is upload on or off
 		std::string							_uploadPath;	// Upload path
 		std::vector<std::string>			_cgiExt;		// List of CGI extentions

@@ -9,6 +9,7 @@ int	main(int argc, char **argv)
 	}
 
 	ServerConfig	config(argv[1]); // Easy way to launch the parsing
+	
 	WebServer		web_server(config); // Create WebServer with all the servers configs
 	web_server.printInfo(); // Print all the servers configs
 	web_server.createServers(); // Create all the servers

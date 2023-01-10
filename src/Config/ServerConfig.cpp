@@ -47,7 +47,6 @@ ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 		{
 			split = splitLine(line, " ;\t");
 			simple->_errorPages.insert(std::make_pair(stoi(split[1]), split[2]));
-
 		}
 		else if (line.find("index") != std::string::npos)
 		{
@@ -77,6 +76,11 @@ ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 			split = splitLine(line, " ;\t");
 			for (size_t i = 1; i < split.size(); i++)
 				simple->_methods.push_back(split[i]);
+		}
+		else if (line.find("redirect") != std::string::npos)
+		{
+			split = splitLine(line, " ;\t");
+			simple->_redirect = split[1];
 		}
 		else if (line.find("upload_enable") != std::string::npos && line.find("on") != std::string::npos)
 			simple->_upload = true;

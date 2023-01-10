@@ -45,6 +45,8 @@ class Response
 		void	set_header(const std::map<std::string, std::string>& header);
 		void	set_body(const std::vector<char>& body);
 
+		void	add_header(const std::string& key, const std::string& value);
+
 		void	set_content_length(size_t content_length);
 		void	set_content_type(const std::string& content_type);
 

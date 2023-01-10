@@ -15,6 +15,7 @@ class HandleHttp
 		std::string		_location;
 		std::string		_req_path;
 		std::string		_final_path;
+		bool			_failed_request;
 
 	// Constructors
 	public:
@@ -29,7 +30,10 @@ class HandleHttp
 	public:
 	void	do_work(void);
 	void	build_response(SimpleConfig& loc_config);
-	void	execute_cgi(void);
+	bool	execute_cgi(void);
+	void	upload_file(void);
+	void	delete_file(void);
+	void	redirection(SimpleConfig& loc_config);
 	void	show_request(void);
 	void	show_response(void);
 

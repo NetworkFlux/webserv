@@ -112,7 +112,7 @@ int		ServerSocket::giveResponse(int fd, std::string message)
 {
 	int ret;
 
-	std::cout << YELLOW_B << "Response: " << std::endl << YELLOW << message.c_str() << NONE << std::endl << std::endl;
+	std::cout << YELLOW_B << "Response: " << std::endl << YELLOW << getHttpRequestWithoutBody(message).c_str() << NONE << std::endl << std::endl;
 	ret = send(fd, message.c_str(), message.size(), 0);
 	return ret;
 }

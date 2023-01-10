@@ -3,7 +3,9 @@
 /*	This contructor initialize all members for use.	*/
 Response::Response(void) : _status_line(), _header(), _body(), _protocol(), _status_code(0),
 	_status_message(), _content_length(0), _content_type()
-{}
+{
+	set_status_line("HTTP/1.1", 500, "Internal Server Error");
+}
 
 /*	This contructor creates the status line by taking its parameters (protocol, status code, status message)
 	ans initialize the other member for later use.	*/
@@ -81,6 +83,11 @@ void	Response::set_body(const std::vector<char>& body)
 	set_content_length(_body.size());
 }
 
+void	Response::add_header(const std::string& key, const std::string& value)
+{
+	_header[key] = value;
+}
+
 void	Response::set_content_length(size_t content_length)
 {
 	_content_length = content_length;
@@ -134,7 +141,7 @@ void	Response::show_data(void) const
 	std::cout << YELLOW_B << "Response data:" << YELLOW << std::endl;
 	std::cout << "Status line: " << _status_line << std::endl;
 	show_header();
-	show_body();
+	// show_body();
 }
 
 void	Response::build_response(const std::string& path)

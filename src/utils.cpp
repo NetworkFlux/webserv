@@ -110,3 +110,21 @@ std::vector<char> str_to_vector(std::string str)
 	std::vector<char> vec(str.begin(), str.end());
 	return (vec);
 }
+
+std::string getHttpRequestBody(std::string httpRequest)
+{
+    std::size_t bodyStartIndex = httpRequest.find("\r\n\r\n");
+    if (bodyStartIndex == std::string::npos) {
+        return "";
+    }
+
+    return (httpRequest.substr(bodyStartIndex + 4));
+}
+std::string getHttpRequestWithoutBody(const std::string& httpRequest) {
+    size_t bodyStartIndex = httpRequest.find("\r\n\r\n");
+    if (bodyStartIndex == std::string::npos) {
+        return httpRequest;
+    }
+
+    return httpRequest.substr(0, bodyStartIndex);
+}

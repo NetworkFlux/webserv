@@ -7,16 +7,18 @@
 
 <body style="background-color:#ee80bc;">
 
-<form action="" method="post">
+<!-- <form action="" method="post">
 	<button name="You have" value="Post_Something">Post</button>
-</form>
+</form> -->
 
-<!-- 
-<form method=\"post\" enctype=\"multipart/form-data\">
-	<div>
-	<label for=\"file\">select file</label>
-	<input type=\"file\" id=\"file\" name=\"file\" multiple>
-	</div>
-<div><button>Envoyer</button></div></form> -->
+
+<form action="/upload/posted.html" method="post">
+	<p>This is a POST form.</p>
+	<label for="file_name">File Name:</label>
+	<input type="text" id="file_name" name="file_name"><br><br>
+	<label for="content">Content:</label>
+	<input type="text" id="content" name="content"><br><br>
+	<input type="submit" value="Submit">
+</form>
 
 </html>

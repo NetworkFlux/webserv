@@ -11,11 +11,12 @@ class Request
 	// Member Variables
 	private:
 		std::string							_status_line;
+		std::map<std::string, std::string>	_header;
+		std::string							_body;
+
 		std::string							_method;
 		std::string							_path;
 		std::string							_protocol;
-		std::string							_body;
-		std::map<std::string, std::string>	_header;
 
 	// Constructors
 	public:

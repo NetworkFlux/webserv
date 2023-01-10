@@ -3,15 +3,16 @@
 Request::Request() : _status_line(), _method(), _path(), _protocol()
 {}
 
-Request::Request(const std::string& status_line) : _status_line(status_line)
+Request::Request(const std::string& status_line) : _status_line(get_first_line(status_line))
 {
 	// Parse the request line
-	std::vector<std::string> request_line_vector = splitLine(status_line, " ");
-	if (request_line_vector.size() != 3)
-		throw std::runtime_error("Request line is not valid");
+	std::vector<std::string> request_line_vector = splitLine(get_first_line(status_line), " ");
+	// if (request_line_vector.size() != 3)
+	// 	throw std::runtime_error("Request line is not valid");
 	_method = request_line_vector[0];
 	_path = request_line_vector[1];
 	_protocol = request_line_vector[2];
+	_body = getHttpRequestBody(status_line);
 }
 
 Request::~Request()
@@ -113,5 +114,6 @@ void	Request::show_data(void) const
 	std::cout << "\tRequest line: " << _status_line << std::endl;
 	std::cout << "\tMethod: " << _method << std::endl;
 	std::cout << "\tPath: " << _path << std::endl;
-	std::cout << "\tProtocol: " << _protocol << NONE << std::endl << std::endl;
+	std::cout << "\tProtocol: " << _protocol << std::endl << std::endl;
+	std::cout << "\tBody:" << std::endl << "\t" << _body << NONE << std::endl << std::endl;
 }

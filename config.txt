@@ -7,7 +7,7 @@
 
 # A simple server on port 80.
 server {
-	listen 80, 8080;
+	listen 5555;
 	server_name localhost;
 
 	error_page 401 /401.html
@@ -26,12 +26,19 @@ server {
 	}
 
 	location /redirect {
-		redirect google.com
+		method POST;
+		index /redir.html;
+		redirect www.google.com
 	}
 
 	location /upload {
 		method POST;
 		index /post_page.html;
+	}
+
+	location /delete {
+		method POST;
+		index /del.html;
 	}
 
 	location /cgi {

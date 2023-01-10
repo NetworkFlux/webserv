@@ -49,3 +49,5 @@ std::vector<char> readBinaryFile(const std::string& fileName);
 bool is_in_vector(const std::vector<std::string>& vec, const std::string& str);
 size_t find_in_str(const std::string& location, const std::string& req_path);
 std::vector<char> str_to_vector(std::string str);
+std::string getHttpRequestBody(std::string httpRequest);
+std::string getHttpRequestWithoutBody(const std::string& httpRequest);

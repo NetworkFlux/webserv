@@ -2,7 +2,7 @@
 
 /*	This constructor only initialize the variable for later use.	*/
 SimpleConfig::SimpleConfig() : _listen(), _serverNames(), _errorPages(), _index(),
-	_root(), _methods(), _uploadPath(), _cgiExt(), _cgiPath(), _locations()
+	_root(), _methods(), _redirect(), _uploadPath(), _cgiExt(), _cgiPath(), _locations()
 {
 	_autoIndex = false;
 	_maxBody = 0;
