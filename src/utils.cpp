@@ -65,6 +65,8 @@ std::string	get_first_line(const std::string& str)
 
 bool file_exists(const std::string& fileName)
 {
+	if (fileName[fileName.size() - 1] == '/')
+		return false;
     std::ifstream infile(fileName);
     return infile.good();
 }

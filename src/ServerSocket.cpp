@@ -76,20 +76,33 @@ int ServerSocket::readConnection(int fd, std::string *req)
     while (true)
     {
         bytesRead = read(fd, _buffer, BUFFER_SIZE);
-        if (bytesRead > 1)
+        if (bytesRead > 0)
         {
             _request.append(_buffer);
             if (_buffer[bytesRead - 1] == '\n')
                 break;
-            bzero(_buffer, sizeof(_buffer));
+			std::string transferEncodingStr = "Transfer-Encoding: chunked";
+            std::size_t transferEncodingPos = _request.find(transferEncodingStr);
+            if (transferEncodingPos != std::string::npos) {
+                if (_request.substr(_request.length()-5) == "0\r\n\r\n") {
+                    break;
+                }
+            }
+			std::string contentLengthStr = "Content-Length: ";
+            std::size_t contentLengthPos = _request.find(contentLengthStr);
+            if (contentLengthPos != std::string::npos) {
+                size_t contentLength = stoi(_request.substr(contentLengthPos + contentLengthStr.length()));
+                if (_request.length() - _request.rfind("\r\n\r\n") - 4 >= contentLength) {
+                    break;
+                }
+            }
+
+			bzero(_buffer, sizeof(_buffer));
         }
         else if (bytesRead == -1)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
-            {
-                // read would block, try again
-                break;
-            }
+                continue; // read would block, try again
             else
             {
                 // other error occurred
@@ -98,14 +111,64 @@ int ServerSocket::readConnection(int fd, std::string *req)
             }
         }
         else
-        {
-            // read returned 0, connection closed
-            break;
-        }
-    }
+		{
+            break; // read returned 0, connection closed
+		}
+	}
 	*req = _request;
     return (bytesRead);
 }
+
+// int ServerSocket::readConnection(int fd, std::string *req)
+// {
+//     int bytesRead;
+//     _request.clear();
+//     bzero(_buffer, sizeof(_buffer));
+//     while (true) {
+//         bytesRead = read(fd, _buffer, BUFFER_SIZE);
+// 		std::cout << "Read : " << _buffer << "end" << std::endl;
+//         if (bytesRead > 0) {
+//             _request.append(_buffer);
+
+// 			if (_request.find("\r\n") != std::string::npos) {
+//                 break;
+//             }
+//             std::string transferEncodingStr = "Transfer-Encoding: chunked";
+//             std::size_t transferEncodingPos = _request.find(transferEncodingStr);
+//             if (transferEncodingPos != std::string::npos) {
+//                 // check if the last chunk has been received
+//                 if (_request.substr(_request.length()-5) == "0\r\n\r\n") {
+//                     break;
+//                 }
+//             }
+// 			 // Check if we have reached the end of the request body
+// 			std::string contentLengthStr = "Content-Length: ";
+//             std::size_t contentLengthPos = _request.find(contentLengthStr);
+//             if (contentLengthPos != std::string::npos) {
+//                 size_t contentLength = stoi(_request.substr(contentLengthPos + contentLengthStr.length()));
+//                 if (_request.length() - _request.rfind("\r\n\r\n") - 4 >= contentLength) {
+//                     break;
+//                 }
+//             }
+
+//             bzero(_buffer, sizeof(_buffer));
+//         } else if (bytesRead == -1) {
+//             if (errno == EAGAIN || errno == EWOULDBLOCK) {
+//                 // read would block, try again
+//                 continue;
+//             } else {
+//                 // other error occurred
+//                 perror("Failed to read");
+//                 exit(EXIT_FAILURE);
+//             }
+//         } else {
+//             break; // read returned 0, connection closed
+//         }
+//     }
+//     *req = _request;
+//     return (bytesRead);
+// }
+
 
 /*	This function will send a message to the connection.	*/
 int		ServerSocket::giveResponse(int fd, std::string message)
@@ -114,6 +177,7 @@ int		ServerSocket::giveResponse(int fd, std::string message)
 
 	std::cout << YELLOW_B << "Response: " << std::endl << YELLOW << getHttpRequestWithoutBody(message).c_str() << NONE << std::endl << std::endl;
 	ret = send(fd, message.c_str(), message.size(), 0);
+	std::cout << "Retour " << ret << std::endl;
 	return ret;
 }
 

@@ -35,6 +35,8 @@
 #include <fcntl.h>
 #include <fstream>
 #include <sys/event.h>
+#include <dirent.h>
+#include <sys/types.h>
 
 // Defines
 #define BUFFER_SIZE 4096

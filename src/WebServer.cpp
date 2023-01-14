@@ -3,7 +3,6 @@
 WebServer::WebServer(ServerConfig& config) : _sockets_list(), _str_req(), _str_rep()
 {
 	_config = &config;
-	_close = false;
 }
 
 WebServer::~WebServer()
@@ -34,7 +33,7 @@ void	WebServer::createServers(void)
 
 			struct kevent ev;
     		EV_SET(&ev, s->get_sock_fd(), EVFILT_READ, EV_ADD, 0, 0, nullptr);
-			_events[s->get_sock_fd()] = ev;
+			_fd_map[s->get_sock_fd()].events = ev;
     		if (kevent(_kq, &ev, 1, nullptr, 0, nullptr) == -1) {
       			std::cerr << "Error adding event to kqueue: " << std::strerror(errno) << '\n';
       			return;
@@ -64,7 +63,7 @@ void WebServer::runServers()
 			int filter = evlist[i].filter;
 
 			if (filter == EVFILT_READ || filter == EVFILT_WRITE) {
-				std::cout << "Event on fd : " << fd << " of type " << filter << std::endl;
+				std::cout << "Event on fd : " << fd << " of type : " << filter << std::endl;
 				handleServer(fd, filter);
 			}
 		}
@@ -92,7 +91,7 @@ void WebServer::handleServer(int fd, int filter)
 			{
 				struct kevent event;
         		EV_SET(&event, current_socket_client[i], EVFILT_READ, EV_ADD, 0, 0, NULL);
-        		_events[current_socket_client[i]] = event;
+        		_fd_map[current_socket_client[i]].events = event;
 				if (kevent(_kq, &event, 1, NULL, 0, NULL) == -1) {
           			std::cerr << "Error adding socket to kqueue: " << std::strerror(errno) << std::endl;
         		}
@@ -100,16 +99,17 @@ void WebServer::handleServer(int fd, int filter)
 		}
 		else if (std::find(current_socket_client.begin(), current_socket_client.end(), fd) != current_socket_client.end())
 		{
-			_close = false;
 			if (filter == EVFILT_READ)
 			{
 				ret = current->readConnection(fd, &_str_req);
+				_fd_map[fd].req += _str_req;
 				if (ret == 0)
-				 	_close = true;
-        		handle_client(current->get_serv_index());
-				struct kevent ev = _events[fd];
+				 	_fd_map[fd].close = true;
+        		handle_client(fd, current->get_serv_index());
+				
+				struct kevent ev = _fd_map[fd].events;
 				EV_SET(&ev, fd, EVFILT_WRITE, EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, 0);
-				_events[fd] = ev;
+				_fd_map[fd].events = ev;
 				if (kevent(_kq, &ev, 1, NULL, 0, NULL) == -1) {
 					std::cerr << "Error in kevent" << std::strerror(errno) << std::endl;
 				}
@@ -119,19 +119,22 @@ void WebServer::handleServer(int fd, int filter)
 				ret = current->giveResponse(fd, _str_rep);
 			 	if (ret < 0)
 			 		std::cout << "send() failed!" << std::endl;
-				struct kevent ev = _events[fd];
+				_fd_map[fd].req.clear();
+				
+				struct kevent ev = _fd_map[fd].events;
 				EV_SET(&ev, fd, EVFILT_READ, EV_ENABLE, 0, 0, 0);
-				_events[fd] = ev;
+				_fd_map[fd].events = ev;
 				if (kevent(_kq, &ev, 1, NULL, 0, NULL) == -1) {
 					std::cerr << "Error in kevent" << std::strerror(errno) << std::endl;
 				}
-			}
-      		if (_close)
-			{
-        		std::cout << "close connection fd = " << fd << std::endl;
-				close(fd);
-				current->shrink_socket_clients(fd);
-				shrink_kqueue_fd(fd);
+
+				if (_fd_map[fd].close)
+				{
+					std::cout << "Close connection on fd = " << fd << std::endl;
+					current->shrink_socket_clients(fd);
+					shrink_kqueue_fd(fd);
+					close(fd);
+				}
 			}
 		}
 	}
@@ -146,10 +149,13 @@ void	WebServer::shrink_kqueue_fd(int fd)
   	}
 }
 
-void	WebServer::handle_client(size_t serv_index)
+void	WebServer::handle_client(int fd, size_t serv_index)
 {
-	HandleHttp	handle(_str_req, _config, serv_index);
+	HandleHttp	handle(_fd_map[fd].req, _config, serv_index);
+
 	handle.show_request();
 	handle.do_work();
+
+	_fd_map[fd].close = handle.client_close();
 	_str_rep = handle.get_response().give_response();
 }

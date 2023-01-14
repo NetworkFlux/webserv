@@ -21,8 +21,8 @@ server {
 	root www;
 
 	location / {
-		method GET POST;
-		index /index.html /index2.html;
+		method GET;
+		autoindex on;
 	}
 
 	location /redirect {
@@ -43,7 +43,8 @@ server {
 
 	location /cgi {
 		method GET POST;
-		index /post_page.html;
+		autoindex on;
+
 	}
 }
 
@@ -63,11 +64,15 @@ server {
 
 	location / {
 		method GET POST;
-		index /401.html;
+		autoindex on;
 	}
 
 	location /upload {
 		method POST;
 		index /post_page.html;
+	}
+	location /cgi {
+		method GET POST;
+		autoindex on;
 	}
 }

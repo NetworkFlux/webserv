@@ -14,6 +14,7 @@ class HandleHttp
 		SimpleConfig	_config;
 		std::string		_location;
 		std::string		_req_path;
+		bool		 	_directory_listing;
 		std::string		_final_path;
 		bool			_failed_request;
 
@@ -36,6 +37,9 @@ class HandleHttp
 	void	redirection(SimpleConfig& loc_config);
 	void	show_request(void);
 	void	show_response(void);
+	void	build_directory_listing();
+	bool	client_close();
+	bool	client_chunked();
 
 	// Helper Functions
 	private:

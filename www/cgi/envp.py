@@ -1,17 +1,22 @@
 #!/usr/bin/python
 
-import cgi
+# Import modules for CGI handling 
+import cgi, cgitb 
 
-# Get the input from the form
-form = cgi.FieldStorage()
-string1 = form.getvalue('string1')
-string2 = form.getvalue('string2')
+# Create instance of FieldStorage 
+form = cgi.FieldStorage() 
 
-# Concatenate the strings
-result = string1 + string2
+# Get data from fields
+first_name = form.getvalue('fname')
+last_name  = form.getvalue('lname')
 
-# Print the HTTP header
-print("Content-type: text/html\n")
+# print "Content-Type:text/html\r\n\r\n"
 
-# Print the result
-print(result)
+print "<html>"
+print "<head>"
+print "<title>Hello - Second CGI Program</title>"
+print "</head>"
+print "<body>"
+print "<h2>Hello %s %s</h2>" % (first_name, last_name)
+print "</body>"
+print "</html>"

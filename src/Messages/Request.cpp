@@ -3,16 +3,16 @@
 Request::Request() : _status_line(), _method(), _path(), _protocol()
 {}
 
-Request::Request(const std::string& status_line) : _status_line(get_first_line(status_line))
+Request::Request(const std::string& request_string)
 {
-	// Parse the request line
-	std::vector<std::string> request_line_vector = splitLine(get_first_line(status_line), " ");
-	// if (request_line_vector.size() != 3)
-	// 	throw std::runtime_error("Request line is not valid");
+	_status_line = get_first_line(request_string);
+	std::vector<std::string> request_line_vector = splitLine(get_first_line(request_string), " ");
+	if (request_line_vector.size() != 3)
+		return ;
 	_method = request_line_vector[0];
 	_path = request_line_vector[1];
 	_protocol = request_line_vector[2];
-	_body = getHttpRequestBody(status_line);
+	_body = getHttpRequestBody(request_string);
 }
 
 Request::~Request()
@@ -94,6 +94,8 @@ void	Request::set_header(const std::string& request)
 			std::string key, value;
 			std::getline(token_iss, key, ':');
 			std::getline(token_iss, value, ':');
+			value.erase(0, 1);
+			value.erase(value.size() - 1, 1);
 			_header[key] = value;
 		}
 		first = true;

@@ -26,6 +26,6 @@ class CGIServer
 	// Member functions
     public:
         void setup_env(const std::map<std::string, std::string> &requestHeaders, const std::string &requestBody);
-        void read_program();
-        std::string run_program(const std::map<std::string, std::string> &requestHeaders, const std::string &requestBody);
+        void read_program(std::string *response);
+        int run_program(const std::map<std::string, std::string> &requestHeaders, const std::string &requestBody, std::string *response);
 };
