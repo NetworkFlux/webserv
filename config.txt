@@ -20,31 +20,21 @@ server {
 
 	root www;
 
+	cgi_extension py php
+
 	location / {
 		method GET;
-		autoindex on;
-	}
-
-	location /redirect {
-		method POST;
-		index /redir.html;
-		redirect www.google.com
-	}
-
-	location /upload {
-		method POST;
-		index /post_page.html;
-	}
-
-	location /delete {
-		method POST;
-		index /del.html;
+		index /index.html
 	}
 
 	location /cgi {
 		method GET POST;
 		autoindex on;
+	}
 
+	location /redir {
+		method GET POST;
+		redirect www.google.com;
 	}
 }
 
