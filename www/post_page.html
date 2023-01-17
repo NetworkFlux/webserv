@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-
 <html>
-
-<title>POST</title>
-<h1>POST SOMETHING PLEASE !!!</h1>
-
-<body style="background-color:#ee80bc;">
-
-<!-- <form action="" method="post">
-	<button name="You have" value="Post_Something">Post</button>
-</form> -->
-
-
-<form action="/upload/posted.html" method="post">
-	<p>This is a POST form.</p>
-	<label for="file_name">File Name:</label>
-	<input type="text" id="file_name" name="file_name"><br><br>
-	<label for="content">Content:</label>
-	<input type="text" id="content" name="content"><br><br>
-	<input type="submit" value="Submit">
-</form>
-
+  
+<body>
+    <h1>Show File-select Fields</h1>
+  
+    <h3>
+        Show a file-select field which allows
+        only one file to be chosen:
+    </h3>
+  
+    <form action="/cgi/upload.php" method="post"
+        enctype="multipart/form-data">
+          
+        <label for="myfile">Select a file:</label>
+        <input type="file" id="myfile" name="userfile" />
+        <br /><br />
+        <input type="submit" name="submit" value="submit" />
+    </form>
+</body>
+  
 </html>

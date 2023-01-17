@@ -117,5 +117,8 @@ void	Request::show_data(void) const
 	std::cout << "\tMethod: " << _method << std::endl;
 	std::cout << "\tPath: " << _path << std::endl;
 	std::cout << "\tProtocol: " << _protocol << std::endl << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = _header.begin(); it != _header.end(); it++)
+		std::cout << "\t" << it->first << ": " << it->second << std::endl;
+	std::cout << std::endl;
 	std::cout << "\tBody:" << std::endl << "\t" << _body << NONE << std::endl << std::endl;
 }
