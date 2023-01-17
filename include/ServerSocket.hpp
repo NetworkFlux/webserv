@@ -34,4 +34,6 @@ class ServerSocket
 		std::vector<int>&	get_socket_client();
 		void 				shrink_socket_clients(int to_find);
 		int					get_sock_fd(void);
+
+		void chunk_message( std::string *message);
 };
