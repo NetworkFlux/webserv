@@ -27,6 +27,13 @@ void CGIServer::setup_env(const std::map<std::string, std::string> &requestHeade
     env.push_back("PATH_INFO=" + _command);
     env.push_back("REQUEST_METHOD=" + _requestMethod);
     env.push_back("CONTENT_LENGTH=" + std::to_string(requestBody.size()));
+
+    if (_requestMethod == "POST")
+    {
+        std::map<std::string, std::string> header = requestHeaders;
+        std::string c_type = header["Content-Type"];
+        env.push_back("CONTENT_TYPE=" + c_type.substr(0, c_type.find(";")));
+    }
     for (std::map<std::string, std::string>::const_iterator it = requestHeaders.begin(); it != requestHeaders.end(); ++it)
     {
         std::string envName = "HTTP_" + it->first;

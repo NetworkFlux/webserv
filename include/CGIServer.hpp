@@ -9,6 +9,7 @@ class CGIServer
     private:
         std::string         _cgiDir;
         std::string         _command;
+        std::string         _path;
         std::string         _query;
         std::string         _requestMethod;
 

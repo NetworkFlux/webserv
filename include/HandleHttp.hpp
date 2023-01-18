@@ -47,6 +47,7 @@ class HandleHttp
 		bool	check_method_allowed(const std::vector<std::string>& loc_methods, const std::vector<std::string>& conf_methods, const std::string& asked_method);
 		bool	check_root(const std::string& root);
 		bool	check_index(SimpleConfig& loc, const std::vector<std::string>& conf_index);
+		bool	is_index_file(SimpleConfig& loc, const std::vector<std::string>& conf_index);
 		bool	check_max_body(long max_body, const std::string& body);
 		bool	check_cgi_extension(const std::string& path);
 };

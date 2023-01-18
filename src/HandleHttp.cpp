@@ -45,6 +45,9 @@ void	HandleHttp::do_work(void)
 		redirection(loc_config);
 		return ;
 	}
+	// Check the asked path IS the index file (needed because index file may not be in the location, so wont be found otherwise)
+	if (is_index_file(loc_config, _config._index))
+		return ;
 	// Check the asked path : if it's a directory, check if there is an index file
 	if (_req_path[_req_path.length() - 1] == '/')
 	{
@@ -58,8 +61,9 @@ void	HandleHttp::do_work(void)
 	// Verify the file extension : if it's a cgi, execute it
 	if (check_cgi_extension(_req_path))
 	{
-		if (execute_cgi())
+		if (!execute_cgi())
 			return (build_response(loc_config));
+		return;
 	}
 	_final_path += _req_path;
 	std::cout << RED << "\tFinal path: " << _final_path << NONE << std::endl;
@@ -126,6 +130,7 @@ bool	HandleHttp::execute_cgi(void)
 		_response.set_status_line("HTTP/1.1", 502 ,"Bad Gateway");
 		return (false);
 	}
+	_response.set_content_type("text/html"); 			// DOIT CHANGER 
 	_response.set_body(str_to_vector(response));
 	_response.set_status_line("HTTP/1.1", 200 ,"OK");
 	return (true);
@@ -199,6 +204,7 @@ bool	HandleHttp::check_index(SimpleConfig& loc, const std::vector<std::string>& 
 		if (file_exists(_final_path + *it))
 		{
 			_final_path += *it;
+			_response.set_status_line("HTTP/1.1", 200 ,"OK");
 			build_response(loc);
 			return (true);
 		}
@@ -208,6 +214,7 @@ bool	HandleHttp::check_index(SimpleConfig& loc, const std::vector<std::string>& 
 		if (file_exists(_final_path + *it))
 		{
 			_final_path += *it;
+			_response.set_status_line("HTTP/1.1", 200 ,"OK");
 			build_response(loc);
 			return (true);
 		}
@@ -217,6 +224,32 @@ bool	HandleHttp::check_index(SimpleConfig& loc, const std::vector<std::string>& 
 		std::cout << RED << "\tAutoIndex : ON" << NONE << std::endl;
 		build_directory_listing();
 		return (true);
+	}
+	return (false);
+}
+
+bool HandleHttp::is_index_file(SimpleConfig& loc, const std::vector<std::string>& conf_index)
+{
+	std::vector<std::string> loc_index = loc._index;
+	for (std::vector<std::string>::const_iterator it = loc_index.begin(); it != loc_index.end(); ++it)
+	{
+		if (_req_path.substr( _req_path.find_last_of('/'), (_req_path.size() - _req_path.find_last_of('/'))) == *it /* file_exists(_final_path + *it) */)
+		{
+			_final_path += *it;
+			_response.set_status_line("HTTP/1.1", 200 ,"OK");
+			build_response(loc);
+			return (true);
+		}
+	}
+	for (std::vector<std::string>::const_iterator it = conf_index.begin(); it != conf_index.end(); ++it)
+	{
+		if (_req_path.substr( _req_path.find_last_of('/'), (_req_path.size() - _req_path.find_last_of('/'))) == *it /* file_exists(_final_path + *it) */)
+		{
+			_final_path += *it;
+			_response.set_status_line("HTTP/1.1", 200 ,"OK");
+			build_response(loc);
+			return (true);
+		}
 	}
 	return (false);
 }

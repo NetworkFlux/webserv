@@ -79,29 +79,33 @@ void	Request::set_protocol(const std::string& protocol)
 	_protocol = protocol;
 }
 
-void	Request::set_header(const std::string& request)
+void Request::set_header(const std::string& request)
 {
-	std::stringstream	ss(request);
-	std::string			token;
-	bool				first = false;
-	while (getline(ss, token, '\n'))
-	{
-		if (token == "\r")
-			break ;
-		if (first)
-		{
-			std::istringstream token_iss(token);
-			std::string key, value;
-			std::getline(token_iss, key, ':');
-			std::getline(token_iss, value, ':');
-			value.erase(0, 1);
-			value.erase(value.size() - 1, 1);
-			_header[key] = value;
-		}
-		first = true;
-	}
-  	std::string remaining_string((std::istreambuf_iterator<char>(ss)), std::istreambuf_iterator<char>());
-	set_body(remaining_string);
+    std::stringstream ss(request);
+    std::string token;
+
+    while (std::getline(ss, token)) // use default delimiter '\n'
+    {
+        if (token == "\r")
+            break;
+
+        // find the first colon in the token
+        size_t colon_pos = token.find(':');
+        if (colon_pos != std::string::npos)
+        {
+            // extract the key and value
+            std::string key = token.substr(0, colon_pos);
+            std::string value = token.substr(colon_pos + 1);
+            // remove any leading or trailing whitespaces
+            value.erase(0, value.find_first_not_of(" \t"));
+            value.erase(value.find_last_not_of(" \t") + 1);
+
+            _header[key] = value;
+        }
+    }
+
+    std::string remaining_string((std::istreambuf_iterator<char>(ss)), std::istreambuf_iterator<char>());
+    set_body(remaining_string);
 }
 
 void	Request::set_body(const std::string& str)

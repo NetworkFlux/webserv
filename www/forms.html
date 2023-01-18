@@ -1,12 +1,12 @@
 
 <body style="background-color:#92be9a;"></body>
-<form action="/cgi/form.php" method="get">
+<form action="/cgi/envp.py" method="get" enctype="text/plain">
 	<p>This is a GET form.</p>
 	<label for="fname">First name:</label>
 	<input type="text" id="fname" name="fname"><br><br>
 	<label for="lname">Last name:</label>
 	<input type="text" id="lname" name="lname"><br><br>
-	<input type="submit" value="Submit">
+	<input type="submit" value="submit">
 </form>
 
 <form action="/cgi/envp.py" method="post">
@@ -15,7 +15,7 @@
 	<input type="text" id="fname" name="fname"><br><br>
 	<label for="lname">Last name:</label>
 	<input type="text" id="lname" name="lname"><br><br>
-	<input type="submit" value="Submit">
+	<input type="submit" value="submit">
 </form>
 
 <form action="/idontexist.py" method="get">
