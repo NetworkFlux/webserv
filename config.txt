@@ -36,6 +36,10 @@ server {
 		method GET POST;
 		redirect www.google.com;
 	}
+
+	location /uploads {
+		method DELETE GET
+	}
 }
 
 server {

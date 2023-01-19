@@ -32,7 +32,7 @@ void CGIServer::setup_env(const std::map<std::string, std::string> &requestHeade
     {
         std::map<std::string, std::string> header = requestHeaders;
         std::string c_type = header["Content-Type"];
-        env.push_back("CONTENT_TYPE=" + c_type.substr(0, c_type.find(";")));
+        env.push_back("CONTENT_TYPE=" + c_type);
     }
     for (std::map<std::string, std::string>::const_iterator it = requestHeaders.begin(); it != requestHeaders.end(); ++it)
     {

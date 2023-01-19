@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-  
 <body>
     <h1>Show File-select Fields</h1>
   
@@ -9,14 +8,11 @@
         only one file to be chosen:
     </h3>
   
-    <form action="/cgi/upload.php" method="post"
-        enctype="multipart/form-data">
-          
-        <label for="myfile">Select a file:</label>
-        <input type="file" id="myfile" name="userfile" />
-        <br /><br />
-        <input type="submit" name="submit" value="submit" />
-    </form>
+    <form action="cgi/upload.py" method="post" enctype="multipart/form-data">
+		<input type="file" name="file">
+		<input type="submit" value="Upload">
+	</form>
+	  
 </body>
   
 </html>

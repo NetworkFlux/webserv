@@ -32,8 +32,7 @@ class HandleHttp
 	void	do_work(void);
 	void	build_response(SimpleConfig& loc_config);
 	bool	execute_cgi(void);
-	void	upload_file(void);
-	void	delete_file(void);
+	bool	delete_file(void);
 	void	redirection(SimpleConfig& loc_config);
 	void	show_request(void);
 	void	show_response(void);

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Delete File</title>
+  </head>
+  <body>
+    <h1>Delete File</h1>
+	<form>
+		<label for="fileName">Enter file name:</label>
+		<input type="text" id="fileName" name="fileName" required>
+		<input type="submit" value="Submit" id="submitBtn">
+	</form>
+	
+	<div id="response"></div>
+
+<script>
+	let submitBtn = document.getElementById("submitBtn");
+	submitBtn.addEventListener("click", deleteFile);
+
+	function deleteFile(event) {
+		event.preventDefault();
+		let xhr = new XMLHttpRequest();
+		let file = document.getElementsByName('fileName')[0].value;
+		xhr.open('DELETE', `http://localhost:5555/uploads/${file}`);
+		xhr.send();
+		xhr.onload = function() {
+		  if (xhr.status === 200) { // analyze HTTP status of the response
+    		window.location.href = "http://localhost:5555/del/deleted.html";
+		} else {
+			  window.location.href = "http://localhost:5555/404.html";
+  			}
+		};
+	}
+</script>
+
+</body>
+
+</html>	  

@@ -45,6 +45,12 @@ void	HandleHttp::do_work(void)
 		redirection(loc_config);
 		return ;
 	}
+	if (_request.get_method() == "DELETE")
+	{
+		if (!delete_file())
+			_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
+		return ;
+	}
 	// Check the asked path IS the index file (needed because index file may not be in the location, so wont be found otherwise)
 	if (is_index_file(loc_config, _config._index))
 		return ;
@@ -116,6 +122,7 @@ void	HandleHttp::build_response(SimpleConfig& loc_config)
 	else if (_final_path.find(".webp") != std::string::npos)
 		_response.set_content_type("image/webp");
 
+	std::cout << RED << "\tFinal path: " << _final_path << NONE << std::endl;
 	_response.set_body(readBinaryFile(_final_path));
 }
 
@@ -134,6 +141,22 @@ bool	HandleHttp::execute_cgi(void)
 	_response.set_body(str_to_vector(response));
 	_response.set_status_line("HTTP/1.1", 200 ,"OK");
 	return (true);
+}
+
+bool	HandleHttp::delete_file(void)
+{
+	std::string	fileToDel = _request.get_path().substr(_request.get_path().find_last_of('=') + 1, _request.get_path().size());
+	std::string	fullPath = "www" + fileToDel;
+	std::cout << "Deleting file: " << fullPath << std::endl;
+	if (file_exists(fullPath))
+	{
+		if (remove(fullPath.c_str()) == 0)
+		{
+			_response.set_status_line("HTTP/1.1", 200 ,"OK");
+			return (true);
+		}
+	}
+	return (false);
 }
 
 void	HandleHttp::redirection(SimpleConfig& loc_config)
