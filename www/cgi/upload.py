@@ -17,7 +17,7 @@ else:
     message = "No file was uploaded"
 
 # Return HTML response
-print("Content-type: text/html\n")
+print("Content-Type: text/html\n")
 print("<html>")
 print("<body>")
 print("<p>" + message + "</p>")

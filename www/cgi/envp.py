@@ -10,7 +10,7 @@ form = cgi.FieldStorage()
 first_name = form.getvalue('fname')
 last_name  = form.getvalue('lname')
 
-print ("Content-Type:text/html\r\n\r\n")
+print("Content-Type:text/html\n")
 
 print("<html>")
 print("<head>")

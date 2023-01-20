@@ -27,6 +27,12 @@ server {
 		index /index.html
 	}
 
+	location /directory {
+		method GET;
+		index /index.html
+		root www;
+	}
+
 	location /cgi {
 		method GET POST;
 		autoindex on;

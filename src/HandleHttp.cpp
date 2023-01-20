@@ -51,12 +51,13 @@ void	HandleHttp::do_work(void)
 			_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
 		return ;
 	}
-	// Check the asked path IS the index file (needed because index file may not be in the location, so wont be found otherwise)
+	// Check the asked path IS the index file (needed because index file may not be in the location folder, so wont be found otherwise)
 	if (is_index_file(loc_config, _config._index))
 		return ;
 	// Check the asked path : if it's a directory, check if there is an index file
-	if (_req_path[_req_path.length() - 1] == '/')
+	if (opendir((_final_path + _req_path).c_str()))
 	{
+		_final_path += _req_path;
 		if (!check_index(loc_config, _config._index))
 		{
 			_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
@@ -71,11 +72,12 @@ void	HandleHttp::do_work(void)
 			return (build_response(loc_config));
 		return;
 	}
-	_final_path += _req_path;
-	std::cout << RED << "\tFinal path: " << _final_path << NONE << std::endl;
+	std::string tmp_final_path = _final_path + _req_path;
+	std::cout << RED << "\tTemp final path: " << tmp_final_path << NONE << std::endl;
 	// If we get here it means the client asked for a file
-	if (file_exists(_final_path))
+	if (file_exists(tmp_final_path))
 	{
+		_final_path = tmp_final_path;
 		_response.set_status_line("HTTP/1.1", 200 ,"OK");
 		return (build_response(loc_config));
 	}
@@ -129,15 +131,21 @@ void	HandleHttp::build_response(SimpleConfig& loc_config)
 bool	HandleHttp::execute_cgi(void)
 {
 	std::cout << RED << "\tCGI" << NONE << std::endl;
-	CGIServer cgi("www", _request.get_path(), _request.get_method());
+	CGIServer cgi(_config._root, _request.get_path(), _request.get_method());
 	std::string response;
-	int error = cgi.run_program(_request.get_header(), _request.get_body(), &response);
-	if (error == -1)
+	if (cgi.run_program(_request.get_header(), _request.get_body(), &response) == -1)
 	{
 		_response.set_status_line("HTTP/1.1", 502 ,"Bad Gateway");
 		return (false);
 	}
-	_response.set_content_type("text/html"); 			// DOIT CHANGER 
+	std::string contentType;
+	std::size_t pos = response.find("Content-Type:");
+	if (pos != std::string::npos) {
+        std::size_t newLinePos = response.find("\n", pos);
+        contentType = response.substr(pos + 13, newLinePos - pos - 13);
+        response.erase(pos, newLinePos - pos);
+    }
+	_response.set_content_type(contentType);	
 	_response.set_body(str_to_vector(response));
 	_response.set_status_line("HTTP/1.1", 200 ,"OK");
 	return (true);
@@ -212,7 +220,12 @@ bool	HandleHttp::check_root(const std::string& root)
 		return (true);
 	}
 	if (!root.empty())
+	{
 		_final_path = root;
+		_req_path.erase(_req_path.find(_location), _location.size());
+		if (_req_path.empty())
+			_req_path = "/";
+	}
 	else
 		_final_path = _config._root;
 	std::cout << RED << "\tRoot: " << _final_path << NONE << std::endl;
@@ -312,11 +325,10 @@ void	HandleHttp::build_directory_listing()
 {
 	struct dirent *dir;
     DIR *pDir;
-	std::string full_path = _final_path + _req_path;
 
-	pDir = opendir(full_path.c_str());
+	pDir = opendir(_final_path.c_str());
 	if (pDir == NULL) {
-		printf ("Cannot open directory '%s' \n", full_path.c_str());
+		printf ("Cannot open directory '%s' \n", _final_path.c_str());
 	}
 	std::string response = "<!DOCTYPE html> <html> <h1>Index of " + _req_path + "</h1>";
 	response += "<table><thead><tr><th role=\"button\">Name</th></tr></thead><tbody>";
