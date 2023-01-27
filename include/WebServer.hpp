@@ -8,19 +8,13 @@ class WebServer
 {
 	// Private Variables
 	private:
-		struct FdInfo
-		{
-			struct kevent events;
-			bool close;
-			std::string req;
-		};
-
 		ServerConfig*					_config;	// Config object
 		std::vector<ServerSocket*>		_sockets_list;	// List of all the sockets
 		std::map<int, FdInfo> 			_fd_map;		// Map that lists active event for each fd
-		int 							_kq;			// FD of the kqueue	
+		int 							_kq;			// FD of the kqueue
 		std::string						_str_req;	// String request
 		std::string						_str_rep;	//	String reply
+		size_t 							_chunk_size;
 
 	// Constructors
 	public:
@@ -35,4 +29,9 @@ class WebServer
 		void	handleServer(int fd, int filter);
 		void	shrink_kqueue_fd(int fd);
 		void	handle_client(int fd, size_t serv_index);
+		void 	finished_request(int fd, size_t serv_index);
+		void 	finished_response(int fd);
+		void 	set_write_event(int fd);
+		void	close_connection(int fd, ServerSocket *current);
+		std::vector<std::string> chunk_message(int fd, std::string *message);
 };

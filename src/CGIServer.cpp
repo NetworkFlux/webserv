@@ -79,10 +79,12 @@ int CGIServer::run_program(const std::map<std::string, std::string> &requestHead
             int pipe2[2];
 			pipe(pipe2);
 			dup2(pipe2[0], STDIN_FILENO);
-			write(pipe2[1], requestBody.c_str(), requestBody.size());
-			close(pipe2[1]); // send EOF
+            size_t ret;
+            	std::cerr << "oui" << std::endl;
+			ret = write(pipe2[1], requestBody.c_str(), requestBody.size());
+			std::cerr << ret << "et " << strerror(errno) << std::endl;
+            close(pipe2[1]); // send EOF
         }
-
         execve(_command.c_str(), nullptr, _envc.data());
 
         std::cerr << "Error executing CGI program: " << strerror(errno) << std::endl;
@@ -93,7 +95,7 @@ int CGIServer::run_program(const std::map<std::string, std::string> &requestHead
         // Parent process
         close(_stdoutPipe[1]);
         read_program(response);
-
+        
         // Wait for the child process to exit
         int status;
         waitpid(pid, &status, 0);

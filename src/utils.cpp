@@ -79,6 +79,7 @@ std::vector<char> readBinaryFile(const std::string& filename)
         return std::vector<char>();
     }
     std::vector<char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	
     return (buffer);
 }
 

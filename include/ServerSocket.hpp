@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FdInfo.hpp"
 #include "utils.hpp"
 
 class ServerSocket
@@ -30,10 +31,10 @@ class ServerSocket
 		int					grabConnection(void);
 		int					readConnection(int fd, std::string *req);
 		int					giveResponse(int fd, std::string message);
+		// int					giveResponseChunked(int fd, std::vector<std::string>,  size_t *chunk_sent, size_t *byte_sent);
+		int					giveResponseChunked(int fd, FdInfo*);
 		void 				socketConf();
 		std::vector<int>&	get_socket_client();
 		void 				shrink_socket_clients(int to_find);
 		int					get_sock_fd(void);
-
-		void chunk_message( std::string *message);
 };

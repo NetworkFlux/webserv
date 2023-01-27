@@ -55,8 +55,10 @@ void	HandleHttp::do_work(void)
 	if (is_index_file(loc_config, _config._index))
 		return ;
 	// Check the asked path : if it's a directory, check if there is an index file
-	if (opendir((_final_path + _req_path).c_str()))
+	DIR *tdir = opendir((_final_path + _req_path).c_str());
+	if ((tdir != NULL))
 	{
+		closedir (tdir);
 		_final_path += _req_path;
 		if (!check_index(loc_config, _config._index))
 		{
@@ -112,6 +114,7 @@ void	HandleHttp::build_response(SimpleConfig& loc_config)
 		}
 		else
 			_final_path += loc_config._errorPages[_response.get_status_code()];
+		// _response.set_content_type("text/html");
 	}
 	if (_final_path.find(".html") != std::string::npos)
 		_response.set_content_type("text/html");
@@ -349,7 +352,9 @@ void	HandleHttp::build_directory_listing()
 bool	HandleHttp::client_close()
 {
 	std::map<std::string, std::string> header = _request.get_header();
-	if (header["Connection"] == "keep-alive")
+	if (header["Connection"] == "keep-alive\r")
 		return false;
-	return true;
+	else if (header["Connection"] == "close\r")
+		return true;
+	return false;
 }
