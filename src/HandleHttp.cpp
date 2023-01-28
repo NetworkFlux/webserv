@@ -21,6 +21,11 @@ void	HandleHttp::do_work(void)
 {
 	SimpleConfig	loc_config = _config._locations[_location];
 
+	if (!check_protocol())
+	{
+		_response.set_status_line("HTTP/1.1", 505 ,"HTTP Version Not Supported");
+		return (build_response(loc_config));
+	}
 	// Check if the method is allowed at that location
 	if (check_method_allowed(loc_config._methods, _config._methods, _request.get_method()))
 	{
@@ -202,6 +207,13 @@ void	HandleHttp::find_location(void)
 			_location = it->first;
 		}
 	}
+}
+
+bool	HandleHttp::check_protocol(void)
+{
+	if (_request.get_protocol() != "HTTP/1.1")
+		return false;
+	return true;
 }
 
 bool	HandleHttp::check_method_allowed(const std::vector<std::string>& loc_methods, const std::vector<std::string>& conf_methods, const std::string& asked_method)

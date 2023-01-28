@@ -49,4 +49,5 @@ class HandleHttp
 		bool	is_index_file(SimpleConfig& loc, const std::vector<std::string>& conf_index);
 		bool	check_max_body(long max_body, const std::string& body);
 		bool	check_cgi_extension(const std::string& path);
+		bool	check_protocol(void);
 };
