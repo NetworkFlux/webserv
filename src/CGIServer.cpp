@@ -50,7 +50,7 @@ void CGIServer::setup_env(const std::map<std::string, std::string> &requestHeade
 void CGIServer::read_program(std::string *response)
 {
     char buffer[1024];
-    while (int bytesRead = read(_stdoutPipe[0], buffer, sizeof(buffer)))
+    while (int bytesRead = read(_outpipe[0], buffer, sizeof(buffer)))
     {
         if (bytesRead < 0)
         {
@@ -64,27 +64,25 @@ void CGIServer::read_program(std::string *response)
 /* Exeute CGI program */
 int CGIServer::run_program(const std::map<std::string, std::string> &requestHeaders, const std::string &requestBody, std::string *response)
 {
-    pipe(_stdoutPipe);
+    pipe(_outpipe);
+    if (_requestMethod == "POST")
+        pipe(_inpipe);
 
     pid_t pid = fork();
     if (pid == 0)
     {
         // Child process
         setup_env(requestHeaders, requestBody);
-        dup2(_stdoutPipe[1], STDOUT_FILENO);
-        close(_stdoutPipe[0]);
 
         // Write the request body to STDIN so it can be read by the cgi
         if (_requestMethod == "POST") {
-            int pipe2[2];
-			pipe(pipe2);
-			dup2(pipe2[0], STDIN_FILENO);
-            size_t ret;
-            	std::cerr << "oui" << std::endl;
-			ret = write(pipe2[1], requestBody.c_str(), requestBody.size());
-			std::cerr << ret << "et " << strerror(errno) << std::endl;
-            close(pipe2[1]); // send EOF
+            close(_inpipe[1]);
+            dup2(_inpipe[0], 0);
         }
+
+        close(_outpipe[0]);
+        dup2(_outpipe[1], STDOUT_FILENO);
+        
         execve(_command.c_str(), nullptr, _envc.data());
 
         std::cerr << "Error executing CGI program: " << strerror(errno) << std::endl;
@@ -93,9 +91,19 @@ int CGIServer::run_program(const std::map<std::string, std::string> &requestHead
     else if (pid > 0)
     {
         // Parent process
-        close(_stdoutPipe[1]);
+        close(_outpipe[1]);
+        if (_requestMethod == "POST") {
+            close(_inpipe[0]);
+            size_t ret;
+            std::cerr << "oui" << std::endl;
+			ret = write(_inpipe[1], requestBody.c_str(), requestBody.size());
+			std::cerr << ret << "et " << strerror(errno) << std::endl;
+            close(_inpipe[1]); // send EOF
+        }
+
         read_program(response);
-        
+        close(_outpipe[0]);
+
         // Wait for the child process to exit
         int status;
         waitpid(pid, &status, 0);
@@ -110,6 +118,7 @@ int CGIServer::run_program(const std::map<std::string, std::string> &requestHead
         }
         else
         {
+            std::cerr << strerror(errno) << std::endl;
             std::cerr << "CGI program did not exit normally" << std::endl;
             return (-1);
         }

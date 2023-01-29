@@ -14,7 +14,8 @@ class CGIServer
         std::string         _requestMethod;
 
     
-        int                 _stdoutPipe[2];
+        int                 _outpipe[2];
+        int                 _inpipe[2];
         std::string         _responseBody;
         std::vector<char*>  _envc;
         
