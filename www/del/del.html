@@ -23,13 +23,13 @@
 		let file = document.getElementsByName('fileName')[0].value;
 		xhr.open('DELETE', `http://localhost:5555/uploads/${file}`);
 		xhr.send();
-		xhr.onload = function() {
-		  if (xhr.status === 200) { // analyze HTTP status of the response
-    		window.location.href = "http://localhost:5555/del/deleted.html";
-		} else {
-			  window.location.href = "http://localhost:5555/404.html";
-  			}
-		};
+		// xhr.onload = function() {
+		//   if (xhr.status === 200) { // analyze HTTP status of the response
+    	// 	window.location.href = "http://localhost:5555/del/deleted.html";
+		// } else {
+		// 	  window.location.href = "http://localhost:5555/404.html";
+  		// 	}
+		// };
 	}
 </script>
 

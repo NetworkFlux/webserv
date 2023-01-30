@@ -54,7 +54,9 @@ void	HandleHttp::do_work(void)
 	{
 		if (!delete_file())
 			_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
-		return ;
+		else
+			std::cout << "final path: " << _final_path << std::endl;
+		return (build_response(loc_config));
 	}
 	// Check the asked path IS the index file (needed because index file may not be in the location folder, so wont be found otherwise)
 	if (is_index_file(loc_config, _config._index))
@@ -169,6 +171,7 @@ bool	HandleHttp::delete_file(void)
 		if (remove(fullPath.c_str()) == 0)
 		{
 			_response.set_status_line("HTTP/1.1", 200 ,"OK");
+			_final_path += "/del/deleted.html";
 			return (true);
 		}
 	}

@@ -119,7 +119,7 @@ void WebServer::handleServer(int fd, int filter)
 
 				std::string transferEncodingStr = "Transfer-Encoding: chunked";
 				std::string contentLengthStr = "Content-Length: ";
-				if ((_fd_map[fd].req.find("GET") != std::string::npos) || (_fd_map[fd].req.find("HEAD") != std::string::npos))
+				if ((_fd_map[fd].req.find("GET") != std::string::npos) || (_fd_map[fd].req.find("DELETE") != std::string::npos))
 				{
 					if (_fd_map[fd].req.find("\r\n\r\n") != std::string::npos)
 						finished_request(fd, current->get_serv_index());
