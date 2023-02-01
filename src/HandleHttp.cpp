@@ -105,7 +105,7 @@ Response&	HandleHttp::get_response(void)
 
 void	HandleHttp::build_response(SimpleConfig& loc_config)
 {
-	if (_response.get_status_code() > 320 && _response.get_status_code() < 500)
+	if (_response.get_status_code() > 320 && _response.get_status_code() < 600)
 	{
 		std::map<int, std::string>::iterator	it = loc_config._errorPages.find(_response.get_status_code());
 		if (it == loc_config._errorPages.end())
@@ -146,6 +146,8 @@ bool	HandleHttp::execute_cgi(void)
 	if (cgi.run_program(_request.get_header(), _request.get_body(), &response) == -1)
 	{
 		_response.set_status_line("HTTP/1.1", 502 ,"Bad Gateway");
+		_final_path = "www";
+		std::cout << "OK11" << std::endl;
 		return (false);
 	}
 	std::string contentType;

@@ -37,6 +37,7 @@ class HandleHttp
 	void	show_request(void);
 	void	show_response(void);
 	void	build_directory_listing();
+	void	build_directory_listing_down();
 	bool	client_close();
 	bool	client_chunked();
 

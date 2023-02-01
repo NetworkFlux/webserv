@@ -16,6 +16,7 @@ server {
 	error_page 405 /405.html;
 	error_page 413 /413.html;
 	error_page 418 /418.html;
+	error_page 502 /502.html;
 
 	client_max_body_size 500K;
 
@@ -45,13 +46,14 @@ server {
 	}
 
 	location /uploads {
-		method DELETE GET
+		method DELETE GET;
+		autoindex on;
 	}
 }
 
 server {
-	listen 6666;
-	server_name example;
+	listen 5556;
+	server_name 127.0.0.1;
 
 	error_page 401 /401.html
 	error_page 403 /403.html;

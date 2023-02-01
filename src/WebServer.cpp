@@ -136,6 +136,7 @@ void WebServer::handleServer(int fd, int filter)
 			}
 			else if (filter == EVFILT_WRITE)
 			{
+				std::cout << "OK00" << std::endl;
 				if (_fd_map[fd].chunked == false)
 				{
 					ret = current->giveResponse(fd, _str_rep);
