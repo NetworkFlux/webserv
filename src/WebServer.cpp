@@ -8,6 +8,8 @@ WebServer::WebServer(ServerConfig& config) : _sockets_list(), _str_req(), _str_r
 
 WebServer::~WebServer()
 {
+	for (size_t i = 0; i < _sockets_list.size(); i++)
+		delete _sockets_list[i];
 }
 
 void	WebServer::printInfo(void)
@@ -19,28 +21,29 @@ void	WebServer::printInfo(void)
 void	WebServer::createServers(void)
 {
 	_kq = kqueue();
-	if (_kq == -1) {
-  		std::cerr << "Error creating kqueue: " << std::strerror(errno) << '\n';
-  		return;
-	}
+	if (_kq == -1)
+		throw std::runtime_error("Error creating kqueue");
 
 	for (size_t j = 0; j < _config->_servConf.size(); j++)
 	{
 		for (size_t i = 0; i < _config->_servConf[j]._listen.size(); i++)
 		{
-			ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(_config->_servConf[j]._listen[i]), INADDR_ANY, j);
-			s->socketConf();
-			s->listeningMode(SOMAXCONN);
+			try {
+				ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(_config->_servConf[j]._listen[i]), INADDR_ANY, j);
+				s->socketConf();
+				s->listeningMode(SOMAXCONN);
 
-			struct kevent ev;
-    		EV_SET(&ev, s->get_sock_fd(), EVFILT_READ, EV_ADD, 0, 0, nullptr);
-			_fd_map[s->get_sock_fd()].events = ev;
-    		if (kevent(_kq, &ev, 1, nullptr, 0, nullptr) == -1) {
-      			std::cerr << "Error adding event to kqueue: " << std::strerror(errno) << '\n';
-      			return;
-    		}
-
-			_sockets_list.push_back(s);
+				struct kevent ev;
+				EV_SET(&ev, s->get_sock_fd(), EVFILT_READ, EV_ADD, 0, 0, nullptr);
+				_fd_map[s->get_sock_fd()].events = ev;
+				if (kevent(_kq, &ev, 1, nullptr, 0, nullptr) == -1)
+					throw std::runtime_error("Error adding event to kqueue");
+				
+				_sockets_list.push_back(s);
+			}
+			catch(std::runtime_error& e) {
+				throw std::runtime_error(e);
+			}
 		}
 	}
 }
@@ -53,10 +56,8 @@ void WebServer::runServers()
 		struct kevent evlist[1024];
 		// Wait for events on the kqueue
 		int n = kevent(_kq, NULL, 0, evlist, 1024, NULL);
-		if (n == -1) {
-			std::cerr << "Error waiting for events: " << std::strerror(errno) << std::endl;
-			return;
-		}
+		if (n == -1)
+			throw std::runtime_error("Error waiting for events");
 		// Process the events
 		for (int i = 0; i < n; ++i)
 		{
@@ -102,16 +103,14 @@ void WebServer::handleServer(int fd, int filter)
 				ret = current->readConnection(fd, &_str_req);
 				_fd_map[fd].req.append(_str_req);
 				_str_req.clear();
-				if (ret == 0) {
-					if (_fd_map[fd].req.empty())
-					{
-						std::cout << BLUE << "Client (fd : " << fd << ") closed connection" << BLUE_B << std::endl;
-						close_connection(fd, current);
-						return ;
-					}
+				if (ret == 0)
+				{
+					std::cout << BLUE << "Client (fd : " << fd << ") closed connection" << BLUE_B << std::endl;
+					close_connection(fd, current);
+					return ;
 				}
 				if (ret == -1)
-				{
+				{	
 					std::cout << BLUE << "Error reading client (fd : " << fd << "), closing connection" << BLUE_B << std::endl;
 					close_connection(fd, current);
 					return ;
@@ -119,7 +118,7 @@ void WebServer::handleServer(int fd, int filter)
 
 				std::string transferEncodingStr = "Transfer-Encoding: chunked";
 				std::string contentLengthStr = "Content-Length: ";
-				if ((_fd_map[fd].req.find("GET") != std::string::npos) || (_fd_map[fd].req.find("DELETE") != std::string::npos))
+				if ((_fd_map[fd].req.find("GET") != std::string::npos) || (_fd_map[fd].req.find("DELETE") != std::string::npos) || (_fd_map[fd].req.find("HEAD") != std::string::npos))
 				{
 					if (_fd_map[fd].req.find("\r\n\r\n") != std::string::npos)
 						finished_request(fd, current->get_serv_index());
@@ -136,7 +135,6 @@ void WebServer::handleServer(int fd, int filter)
 			}
 			else if (filter == EVFILT_WRITE)
 			{
-				std::cout << "OK00" << std::endl;
 				if (_fd_map[fd].chunked == false)
 				{
 					ret = current->giveResponse(fd, _str_rep);
@@ -145,6 +143,15 @@ void WebServer::handleServer(int fd, int filter)
 						std::cout << BLUE << "Error sending to client (fd : " << fd << ") closed connection" << BLUE_B << std::endl;
 						close_connection(fd, current);
 						return ;
+					}
+					if (ret == 0)
+					{
+						if (_str_rep.size() > 0)
+						{
+							std::cout << BLUE << "Error sending to client (fd : " << fd << "), closing connection" << BLUE_B << std::endl;
+							close_connection(fd, current);
+							return ;
+						}		
 					}
 				}
 				else
@@ -253,7 +260,8 @@ std::vector<std::string> WebServer::chunk_message(int fd, std::string *message)
 				std::string _chunk_size = ss.str();
 				chunk = message->substr(0, headers_end + 4) + _chunk_size + "\r\n" + message->substr(headers_end + 4, (to_send - (headers_end + 4))) + "\r\n";
 				first_chunk = false;
-			} else {
+			}
+			else {
 				ss << std::hex << to_send;
 				std::string _chunk_size = ss.str();
 				chunk = _chunk_size + "\r\n" + message->substr(sent, to_send) + "\r\n";

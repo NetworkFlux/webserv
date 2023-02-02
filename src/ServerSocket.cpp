@@ -16,7 +16,7 @@ ServerSocket::ServerSocket(int domain, int type, int protocol, int port, u_int32
 
 ServerSocket::~ServerSocket()
 {
-	std::cout << "Closing Server";
+	std::cout << "Closing Socket" << std::endl;
 	if (_connection != -1)
 		close(_connection);
 }
@@ -111,17 +111,15 @@ void	ServerSocket::socketConf()
 	rc = fcntl(_sockFD, F_SETFL, O_NONBLOCK);
 	if (rc < 0)
   	{
-		perror("fcntl() failed");
 		close(_sockFD);
-		exit(-1);
+		throw std::runtime_error("fcntl() failed");
   	}
 
 	rc = setsockopt(_sockFD, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
   	if (rc < 0)
   	{
-		perror("setsockopt() failed");
 		close(_sockFD);
-		exit(-1);
+		throw std::runtime_error("setsockopt() failed");
   	}
 }
 

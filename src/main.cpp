@@ -12,7 +12,15 @@ int	main(int argc, char **argv)
 	
 	WebServer		web_server(config); // Create WebServer with all the servers configs
 	web_server.printInfo(); // Print all the servers configs
-	web_server.createServers(); // Create all the servers
-	web_server.runServers(); // Run all the servers
+	try
+	{
+		web_server.createServers(); // Create all the servers
+		web_server.runServers(); // Run all the servers
+	}
+	catch(std::runtime_error& e)
+	{
+		std::cerr << e.what() << std::endl;
+        return -1;
+	}
 	return (0);
 }

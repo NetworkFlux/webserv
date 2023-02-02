@@ -94,10 +94,7 @@ int CGIServer::run_program(const std::map<std::string, std::string> &requestHead
         close(_outpipe[1]);
         if (_requestMethod == "POST") {
             close(_inpipe[0]);
-            size_t ret;
-            std::cerr << "oui" << std::endl;
-			ret = write(_inpipe[1], requestBody.c_str(), requestBody.size());
-			std::cerr << ret << "et " << strerror(errno) << std::endl;
+			write(_inpipe[1], requestBody.c_str(), requestBody.size());
             close(_inpipe[1]); // send EOF
         }
 
