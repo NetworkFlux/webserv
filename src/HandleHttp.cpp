@@ -1,7 +1,7 @@
 #include "../include/HandleHttp.hpp"
 
 HandleHttp::HandleHttp(const std::string& request_line, ServerConfig* serverConfig, size_t serv_index) : _request(request_line),
-	_response(), _location(), _directory_listing(false), _final_path(), _failed_request(false)
+	_response(), _location(), _final_path(), _failed_request(false)
 {
 	if (_request.get_status_line().empty())
 		_failed_request = true;
@@ -26,16 +26,16 @@ void	HandleHttp::do_work(void)
 		_response.set_status_line("HTTP/1.1", 505 ,"HTTP Version Not Supported");
 		return (build_response(loc_config));
 	}
-	// Check if the method is allowed at that location
-	if (check_method_allowed(loc_config._methods, _config._methods, _request.get_method()))
-	{
-		_response.set_status_line("HTTP/1.1", 405 ,"Method Not Allowed");
-		return (build_response(loc_config));
-	}
 	// Before doing anything, check the root and add it to _final_path
 	if (check_root(loc_config._root))
 	{
 		_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
+		return (build_response(loc_config));
+	}
+	// Check if the method is allowed at that location
+	if (check_method_allowed(loc_config._methods, _config._methods, _request.get_method()))
+	{
+		_response.set_status_line("HTTP/1.1", 405 ,"Method Not Allowed");
 		return (build_response(loc_config));
 	}
 	// Verify if the request body is not too big
@@ -149,7 +149,6 @@ bool	HandleHttp::execute_cgi(void)
 	{
 		_response.set_status_line("HTTP/1.1", 502 ,"Bad Gateway");
 		_final_path = "www";
-		std::cout << "OK11" << std::endl;
 		return (false);
 	}
 	std::string contentType;

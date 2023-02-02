@@ -31,7 +31,7 @@ void	WebServer::createServers(void)
 			try {
 				ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(_config->_servConf[j]._listen[i]), INADDR_ANY, j);
 				s->socketConf();
-				s->listeningMode(SOMAXCONN);
+				s->listeningMode(0);
 
 				struct kevent ev;
 				EV_SET(&ev, s->get_sock_fd(), EVFILT_READ, EV_ADD, 0, 0, nullptr);

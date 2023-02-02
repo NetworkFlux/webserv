@@ -2,7 +2,7 @@
 
 ServerSocket::ServerSocket(int domain, int type, int protocol, int port, u_int32_t interface, size_t serv_index)
 {
-	_sockFD = socket(domain, type, protocol);
+	_sockFD = socket(domain, type, protocol);	
 	if (_sockFD == -1)
 		throw std::runtime_error("Socket creation failed");
 	_connection = -1;

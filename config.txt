@@ -8,7 +8,7 @@
 # A simple server on port 80.
 server {
 	listen 5555;
-	server_name localhost;
+	server_name 
 
 	error_page 401 /401.html
 	error_page 403 /403.html;
@@ -22,7 +22,7 @@ server {
 
 	root www;
 
-	cgi_extension py php
+	cgi_extension py
 
 	location / {
 		method GET;
@@ -42,7 +42,7 @@ server {
 
 	location /redir {
 		method GET POST;
-		redirect www.google.com;
+		redirect http://www.google.com;
 	}
 
 	location /uploads {
@@ -52,8 +52,8 @@ server {
 }
 
 server {
-	listen 5556;
-	server_name 127.0.0.1;
+	listen 80;
+	server_name example.com;
 
 	error_page 401 /401.html
 	error_page 403 /403.html;
