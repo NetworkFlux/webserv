@@ -58,6 +58,8 @@ void	HandleHttp::do_work(void)
 			std::cout << "final path: " << _final_path << std::endl;
 		return (build_response(loc_config));
 	}
+	if (_req_path == "/download.html")
+		return (build_directory_listing_down());
 	// Check the asked path IS the index file (needed because index file may not be in the location folder, so wont be found otherwise)
 	if (is_index_file(loc_config, _config._index))
 		return ;
@@ -359,6 +361,37 @@ void	HandleHttp::build_directory_listing()
 		response += "\"> ";
 		response += dir->d_name;
 		response += "</a></td></tr>\n";
+    }
+    closedir (pDir);
+	response += "</tbody></table></html>";
+	_response.set_body(str_to_vector(response));
+	_response.set_status_line("HTTP/1.1", 200 ,"OK");
+}
+
+void	HandleHttp::build_directory_listing_down()
+{
+	struct dirent *dir;
+    DIR *pDir;
+
+	_final_path = "www/uploads/";
+	pDir = opendir(_final_path.c_str());
+	if (pDir == NULL) {
+		printf ("Cannot open directory '%s' \n", _final_path.c_str());
+	}
+	std::string response = "<!DOCTYPE html> <html> <h1>Downloads</h1>";
+	response += "<table><thead><tr><th role=\"button\">Name</th></tr></thead><tbody>";
+	int i = 0;
+	while ((dir = readdir(pDir)) != NULL) {
+		if (i > 1)
+		{
+        	response += "<tr>";
+			response += "<td><a href=\"/uploads/";
+			response += dir->d_name;
+			response += "\"download> ";
+			response += dir->d_name;
+			response += "</a></td></tr>\n";
+		}
+		i++;
     }
     closedir (pDir);
 	response += "</tbody></table></html>";
