@@ -30,7 +30,7 @@ class WebServer
 		void	shrink_kqueue_fd(int fd);
 		void	handle_client(int fd, size_t serv_index);
 		void 	finished_request(int fd, size_t serv_index);
-		void 	finished_response(int fd);
+		void 	clear_response(int fd);
 		void 	set_write_event(int fd);
 		void	close_connection(int fd, ServerSocket *current);
 		std::vector<std::string> chunk_message(int fd, std::string *message);

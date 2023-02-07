@@ -172,7 +172,8 @@ void WebServer::handleServer(int fd, int filter)
 
 						if (_fd_map[fd].chunk_sent == _fd_map[fd].chunks.size())
 						{
-							finished_response(fd);
+							std::cout << BLUE << "Write on client (fd : " << fd << ")" << BLUE_B << std::endl;
+							clear_response(fd);
 							break;
 						}
 						set_write_event(fd);
@@ -198,6 +199,7 @@ void WebServer::close_connection(int fd, ServerSocket *current)
 {
 	current->shrink_socket_clients(fd);
 	shrink_kqueue_fd(fd);
+	clear_response(fd);
 	close(fd);
 }
 
@@ -218,9 +220,9 @@ void WebServer::finished_request(int fd, size_t serv_index)
 	set_write_event(fd);
 }
 
-void WebServer::finished_response(int fd)
+void WebServer::clear_response(int fd)
 {
-	std::cout << BLUE << "Write on client (fd : " << fd << ")" << BLUE_B << std::endl;
+	_fd_map[fd].chunks.clear();
 	_fd_map[fd].chunked = false;
 	_fd_map[fd].byte_sent = 0;
 	_fd_map[fd].chunk_sent = 0;
