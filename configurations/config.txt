@@ -8,7 +8,7 @@
 # A simple server on port 80.
 server {
 	listen 127.0.0.1:5555;
-	server_name localhost;
+	server_name first;
 
 	error_page 202 /202.html;
 	error_page 401 /401.html;
@@ -53,8 +53,8 @@ server {
 }
 
 server {
-	listen 127.0.0.1:5556;
-	server_name exa;
+	listen 127.0.0.1:80;
+	server_name hello;
 
 	error_page 401 /401.html
 	error_page 403 /403.html;

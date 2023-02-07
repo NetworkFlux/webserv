@@ -10,6 +10,19 @@ HandleHttp::HandleHttp(const std::string& request_line, ServerConfig* serverConf
 	if ((pos = _req_path.find('?')) != -1)
 		_req_path = _request.get_path().substr(0, pos);
 	_request.set_header(request_line);
+
+	for (std::vector<SimpleConfig>::iterator it = serverConfig->_servConf.begin(); it != serverConfig->_servConf.end(); it++)
+	{
+		std::map<std::string, std::string> header = _request.get_header();
+		std::string host = header["Host"];
+		host = host.substr(0, host.size() - 1);
+		if (!it->_serverNames.front().compare(0, host.size(), host))
+		{
+			_config = *it;
+			find_location();
+			return ;
+		}
+	}
 	_config = serverConfig->_servConf[static_cast<unsigned int>(serv_index)];
 	find_location();
 }
