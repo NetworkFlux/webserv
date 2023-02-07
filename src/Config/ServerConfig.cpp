@@ -38,6 +38,11 @@ ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 			{
 				std::vector<std::string> split2;
 				split2 = splitLine(split[i], ":");
+				if (split2[1].empty())
+				{
+					std::cout << "Bad ip:port format" << std::endl;
+					exit(EXIT_FAILURE);
+				}
 				simple->_listen.insert(std::make_pair(split2[0], split2[1]));
 			}
 		}
