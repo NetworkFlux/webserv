@@ -26,8 +26,8 @@ void	SimpleConfig::printConf(std::string prefix, std::string color) const
 	if (_listen.size())
 	{
 		std::cout << color << upPrefix << "listen \t\t: " << color ;
-		for (size_t j = 0; j < _listen.size(); j++)
-			std::cout << _listen[j] << " - ";
+		for (std::map<std::string, std::string>::const_iterator it = _listen.begin(); it != _listen.end(); it++)
+			std::cout << it->first << ":" << it->second << " - ";
 		std::cout << NONE << std::endl;
 	}
 	// Server names

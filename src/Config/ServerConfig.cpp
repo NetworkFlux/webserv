@@ -35,7 +35,11 @@ ServerConfig::ServerConfig(std::string path) : _servConf(), _file(path)
 		{
 			split = splitLine(line, " ;\t");
 			for (size_t i = 1; i < split.size(); i++)
-				simple->_listen.push_back(split[i]);
+			{
+				std::vector<std::string> split2;
+				split2 = splitLine(split[i], ":");
+				simple->_listen.insert(std::make_pair(split2[0], split2[1]));
+			}
 		}
 		else if (line.find("server_name ") != std::string::npos)
 		{

@@ -1,1 +1,2 @@
-Deletion only works on port 5555 (del.html)
+1. Deletion only works on port 5555 (del.html)
+2. if config file not correct program crashes.

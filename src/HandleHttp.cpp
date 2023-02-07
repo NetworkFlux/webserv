@@ -355,7 +355,7 @@ void	HandleHttp::build_directory_listing()
 	response += "<table><thead><tr><th role=\"button\">Name</th></tr></thead><tbody>";
 	while ((dir = readdir(pDir)) != NULL) {
         response += "<tr>";
-		response += "<td><a href=\"http://" + _config._serverNames[0] + ":" + _config._listen[0] + _req_path;
+		response += "<td><a href=\"http://" + _config._serverNames[0] + ":" + _config._listen.find("127.0.0.1")->second + _req_path;
 		response += dir->d_name;
 		response += "\"> ";
 		response += dir->d_name;
