@@ -16,4 +16,9 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) -I include -c $< -o $@
 
 clean:
+	rm -rf $(OBJ_DIR)
+
+fclean:
 	rm -rf $(OBJ_DIR) $(EXECUTABLE)
+
+re: fclean all

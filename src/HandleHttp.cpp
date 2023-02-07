@@ -53,7 +53,7 @@ void	HandleHttp::do_work(void)
 	if (_request.get_method() == "DELETE")
 	{
 		if (!delete_file())
-			_response.set_status_line("HTTP/1.1", 404 ,"Not Found");
+			_response.set_status_line("HTTP/1.1", 202 ,"Accepted");
 		else
 			std::cout << "final path: " << _final_path << std::endl;
 		return (build_response(loc_config));
@@ -107,7 +107,7 @@ Response&	HandleHttp::get_response(void)
 
 void	HandleHttp::build_response(SimpleConfig& loc_config)
 {
-	if (_response.get_status_code() > 320 && _response.get_status_code() < 600)
+	if (_response.get_status_code() > 200 && _response.get_status_code() < 600)
 	{
 		std::map<int, std::string>::iterator	it = loc_config._errorPages.find(_response.get_status_code());
 		if (it == loc_config._errorPages.end())

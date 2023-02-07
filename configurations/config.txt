@@ -1,0 +1,82 @@
+# Here is an example of a full configuration using all the features available.
+# It's based on Nginx conf, without the features we don't need to manage.
+
+# Binary properties takes yes/no as value.
+# Properties assignment ends with ';'.
+# There can be an inifinite number of whitespaces before and between proprties name and values.
+
+# A simple server on port 80.
+server {
+	listen 5555;
+	server_name localhost;
+
+	error_page 202 /202.html;
+	error_page 401 /401.html;
+	error_page 403 /403.html;
+	error_page 404 /404.html;
+	error_page 405 /405.html;
+	error_page 413 /413.html;
+	error_page 418 /418.html;
+	error_page 502 /502.html;
+
+	client_max_body_size 500K;
+
+	root www;
+
+	cgi_extension py
+
+	location / {
+		method GET;
+		index /index.html
+	}
+
+	location /directory {
+		method GET;
+		index /index.html
+		root www;
+	}
+
+	location /cgi {
+		method GET POST;
+		autoindex on;
+	}
+
+	location /redir {
+		method GET POST;
+		redirect www.google.com;
+	}
+
+	location /uploads {
+		method DELETE GET;
+		autoindex on;
+	}
+}
+
+server {
+	listen 5556;
+	server_name exa;
+
+	error_page 401 /401.html
+	error_page 403 /403.html;
+	error_page 404 /404.html;
+	error_page 405 /405.html;
+	error_page 418 /418.html;
+
+	client_max_body_size 500K;
+
+	root www;
+
+	location / {
+		method GET POST;
+		autoindex on;
+	}
+
+	location /upload {
+		method POST;
+		index /post_page.html;
+	}
+	location /cgi {
+		method GET POST;
+		autoindex on;
+	}
+}
