@@ -9,7 +9,7 @@ class SimpleConfig
 {
 	// Member Variables
 	public:
-		std::map<std::string, std::string>	_listen;		// List of where to listen to connections
+		std::multimap<std::string, std::string>	_listen;		// List of where to listen to connections
 		std::vector<std::string>			_serverNames;	// List of possible server names
 		std::map<int, std::string>			_errorPages;	// Maping of errors and their path
 		bool								_autoIndex;		// Autoindex on or off

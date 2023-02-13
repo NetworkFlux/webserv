@@ -29,9 +29,15 @@ size_t		ServerSocket::get_serv_index()
 void	ServerSocket::listeningMode(int maxIncoming)
 {
 	if ((bind(_sockFD, (struct sockaddr *)&_address, sizeof(_address))) < 0)
-		std::cout << "Failed to bind a socket" << std::endl;
+	{
+		close(_sockFD);
+		throw std::runtime_error("Failed to bind to port");
+	}
 	if ((listen(_sockFD, maxIncoming)) < 0)
+	{
+		close(_sockFD);
 		throw std::runtime_error("Failed to listen on socket");
+	}
 }
 
 int	ServerSocket::grabConnection(void)

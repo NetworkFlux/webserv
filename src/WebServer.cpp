@@ -26,9 +26,9 @@ void	WebServer::createServers(void)
 
 	for (size_t j = 0; j < _config->_servConf.size(); j++)
 	{
-		for (size_t i = 0; i < _config->_servConf[j]._listen.size(); i++)
+		int i=0;
+		for (std::multimap<std::string, std::string>::iterator it = _config->_servConf[j]._listen.begin(); it != _config->_servConf[j]._listen.end(); it++)
 		{
-			std::map<std::string, std::string>::iterator it = _config->_servConf[j]._listen.begin();
 			try {
 				ServerSocket* s = new ServerSocket(AF_INET, SOCK_STREAM, 0, stoi(it->second), INADDR_ANY, j);
 				s->socketConf();
@@ -43,9 +43,10 @@ void	WebServer::createServers(void)
 				_sockets_list.push_back(s);
 			}
 			catch(std::runtime_error& e) {
-				break;//throw std::runtime_error(e);
+				std::cerr <<"Server " << (j+1) << "." << i << " error : " << e.what() << std::endl;
+				break;
 			}
-			it++;
+			i++;
 		}
 	}
 }

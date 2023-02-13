@@ -362,6 +362,8 @@ void	HandleHttp::build_directory_listing()
 	DIR *pDir;
 
 	mkdir("www/uploads", 0777);
+	if (strcmp((--_req_path.end()).base(), "/") != 0)
+		_req_path.append("/");
 	pDir = opendir(_final_path.c_str());
 	if (pDir == NULL) {
 		printf ("Cannot open directory '%s' \n", _final_path.c_str());
@@ -370,7 +372,7 @@ void	HandleHttp::build_directory_listing()
 	response += "<table><thead><tr><th role=\"button\">Name</th></tr></thead><tbody>";
 	while ((dir = readdir(pDir)) != NULL) {
         response += "<tr>";
-		response += "<td><a href=\"http://" + _config._serverNames[0] + ":" + _config._listen.find("127.0.0.1")->second + _req_path;
+		response += "<td><a href=\"http://" + _config._listen.find("127.0.0.1")->first + ":" + _config._listen.find("127.0.0.1")->second + _req_path;
 		response += dir->d_name;
 		response += "\"> ";
 		response += dir->d_name;

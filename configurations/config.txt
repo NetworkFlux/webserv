@@ -7,7 +7,7 @@
 
 # A simple server on port 80.
 server {
-	listen localhost:5555;
+	listen localhost:5555; localhost:5556;
 	server_name first;
 
 	error_page 202 /202.html;
@@ -67,7 +67,7 @@ server {
 	root www;
 
 	location / {
-		index /index2.html
+		autoindex on;
 		method GET POST;
 	}
 
