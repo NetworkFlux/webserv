@@ -7,7 +7,7 @@
 
 # A simple server on port 80.
 server {
-	listen 127.0.0.1:5555;
+	listen localhost:5555;
 	server_name first;
 
 	error_page 202 /202.html;
@@ -43,7 +43,7 @@ server {
 
 	location /redir {
 		method GET POST;
-		redirect www.google.com;
+		redirect http://www.google.com;
 	}
 
 	location /uploads {
@@ -67,8 +67,8 @@ server {
 	root www;
 
 	location / {
+		index /index2.html
 		method GET POST;
-		autoindex on;
 	}
 
 	location /upload {

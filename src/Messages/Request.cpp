@@ -124,5 +124,5 @@ void	Request::show_data(void) const
 	for (std::map<std::string, std::string>::const_iterator it = _header.begin(); it != _header.end(); it++)
 		std::cout << "\t" << it->first << ": " << it->second << std::endl;
 	std::cout << std::endl;
-	// std::cout << "\tBody:" << std::endl << "\t" << _body << NONE << std::endl << std::endl;
+	std::cout << "\tBody:" << std::endl << "\t" << _body << NONE << std::endl << std::endl;
 }

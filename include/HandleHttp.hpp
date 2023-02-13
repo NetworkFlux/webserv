@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sys/stat.h>
 #include "Messages/Request.hpp"
 #include "Messages/Response.hpp"
 #include "Config/ServerConfig.hpp"

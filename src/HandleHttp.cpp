@@ -92,6 +92,7 @@ void	HandleHttp::do_work(void)
 	// Verify the file extension : if it's a cgi, execute it
 	if (check_cgi_extension(_req_path))
 	{
+		mkdir("www/uploads", 0777);
 		if (!execute_cgi())
 			return (build_response(loc_config));
 		return;
@@ -358,8 +359,9 @@ bool	HandleHttp::check_max_body(long max_body, const std::string& body)
 void	HandleHttp::build_directory_listing()
 {
 	struct dirent *dir;
-    DIR *pDir;
+	DIR *pDir;
 
+	mkdir("www/uploads", 0777);
 	pDir = opendir(_final_path.c_str());
 	if (pDir == NULL) {
 		printf ("Cannot open directory '%s' \n", _final_path.c_str());
@@ -383,8 +385,9 @@ void	HandleHttp::build_directory_listing()
 void	HandleHttp::build_directory_listing_down()
 {
 	struct dirent *dir;
-    DIR *pDir;
+	DIR *pDir;
 
+	mkdir("www/uploads", 0777);
 	_final_path = "www/uploads/";
 	pDir = opendir(_final_path.c_str());
 	if (pDir == NULL) {

@@ -43,7 +43,7 @@ void	WebServer::createServers(void)
 				_sockets_list.push_back(s);
 			}
 			catch(std::runtime_error& e) {
-				throw std::runtime_error(e);
+				break;//throw std::runtime_error(e);
 			}
 			it++;
 		}
